@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<!-- Site developed by Collin Biedenkapp and Brandon Filer of TFDi Design -->
+<html>
+	
+<!-- Mirrored from jetstreamradio.com/?content=review by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 02:52:50 GMT -->
+<head>
+    <title>JetStream Radio</title>		
+		<link href="css/main.css" rel="stylesheet" type="text/css" />
+		<script type="text/javascript" src="../code.jquery.com/jquery-latest.js"></script>
+		<script type="text/javascript" src="../code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+        <link rel="icon" type="image/icon" href="images/favicon.ico">
+        <meta name="description" content="JetStream Radio is an online radio station created by and for the aviation community.">
+        <meta name="keywords" content="radio, internet radio, aviation, virtual aviation, free music, live music, live radio, online radio, flight sim, fsx radio, fs radio, fsx, fs2004, tfdi, flight unlimited, smartcars2">
+     	<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','../www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-63747013-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+<script src='../www.google.com/recaptcha/api.js'></script>		<script>
+			var player = new Audio();			
+			var volume = .25;			
+			player.src = 'http://cabhs30.sonixcast.com:20008/stream';		
+			//player.src = 'http://thassos.cdnstream.com:5180/stream';
+			player.volume = volume;			
+						player.preload = "none";
+						var curr_news = 0;
+			var max_news = 0;
+			
+			function get_curr_song() {
+				$.ajax({
+					url:"/radioapi.php?requester=web",
+					type:'GET',
+					success:function(json) {
+						if(json != "")
+							$('#nowplaying').html(" On Air: " + json);
+					}     
+				});
+				$.ajax({
+					url:"/buttoncontrols.php",
+					type:"GET",
+					success:function(json) {
+						if(json != "") {
+							if(json == "SONGREQUEST") {
+								document.getElementById('autodjformbutton').style.display = 'none';
+								document.getElementById('songrequestbutton').style.display = 'block';								
+							}
+							else if(json == "HIDE"){
+								document.getElementById('autodjformbutton').style.display = 'none';
+								document.getElementById('songrequestbutton').style.display = 'none';	
+							}
+							else {
+								document.getElementById('autodjformbutton').style.display = 'block';
+								document.getElementById('songrequestbutton').style.display = 'none';
+							}
+						}
+					}
+				});
+			}
+			
+			window.setInterval(function() {
+				get_curr_song();
+			}, 15000);
+			get_curr_song();
+			
+						$(document).delegate('#newsitem_ball_0',"click",
+				function() {
+					if(curr_news == 0)
+						return;
+										$('#news_item_0').css({"display" : "none"});
+										curr_news = 0;
+					$('#news_item_0').fadeIn(500);
+				}
+			);
+						 
+			 			
+			function go_to_autodj_form() {
+				window.location='index6339.html?content=autodjsongform';
+			}
+			
+			$(function() {
+			 	   var toptab_pos = 0;
+				   var popup_state = 0;
+			 	    var listenmode = 0;
+					
+				   	$('.menuitem').mouseenter(
+					function() {
+						$(this).stop(true, false).animate({
+							'background-color': '#1362D8',
+							'color' : '#ffffff'
+						},100);
+					}
+					);
+					
+					document.getElementById('volumecontrol').addEventListener('input',function(ev) {
+						volume = ($('#volumecontrol').val() / 100);
+						if(listenmode == 1)
+							player.volume = volume;
+						$.ajax({
+							url:"/function/session.php?volume=" + volume,
+							type:'GET'
+						});
+					},false);
+					
+					$('.menuitem').mouseleave(
+					function() {
+						$(this).stop(true, false).animate({
+							'background-color' : '#a2a2a2',
+							'color' : '#ffffff'
+						},250);
+					}
+					);
+					
+					$('.menuitem').mousedown(
+					function() {
+						$(this).stop(true, false).animate({
+							'background-color' : '#0F4CA8',
+							'color' : '#ffffff'
+						},50);
+					}
+					);
+					
+					$('.menuitem').mouseup(
+					function() {
+						$(this).stop(true, false).animate({
+							'background-color': '#1362D8'						
+						},50);
+					}
+					);
+					
+					$('#loginpulldowntab').mouseenter(
+					function() {
+						$(this).stop(true, false).animate({
+							'background-color': '#0055bf'
+						},250);
+					}
+					);
+					
+					$('#loginpulldowntab').mouseleave(
+					function() {
+						$(this).stop(true, false).animate({
+							'background-color' : '#a2a2a2'
+						},250);
+					}
+					);
+					
+					$('#loginpulldowntab').mousedown(
+					function() {
+						$(this).stop(true, false).animate({
+							'background-color' : '#0c49a3',
+							'color' : '#ffffff'
+						},50);
+					}
+					);
+					
+					$('#loginpulldowntab').mouseup(
+					function() {
+						$(this).stop(true, false).animate({
+							'background-color': '#0055bf'						
+						},50);
+					}
+					);
+					
+					$('#loginpulldowntab').click(
+					function() {
+						if(toptab_pos == 0) {
+							$('#topmaster').animate({
+								'top': '70px'								
+							}, 250);
+							toptab_pos = 1;
+						}
+						else {
+							$('#topmaster').animate({
+								'top': '0'
+							}, 250);
+							toptab_pos = 0;
+						}
+						$.ajax({
+							url:"/function/session.php?pulldown=" + toptab_pos,
+							type:'GET'
+						});
+						return false;
+					}
+					);
+					
+					$('#homebutton').click(
+					function() {
+												window.location.href = 'index.html';
+												return false;
+					}
+					);
+					
+					$('#feedbackbutton').click(
+					function() {
+												window.location.href = 'index1b80.html?page=feedback';
+												return false;
+					}
+					);
+					
+					$('#meetdjbutton').click(
+					function() {
+												window.location.href = 'index4b72.html?page=meetdj';
+												return false;
+					}
+					);
+					
+					//
+					
+					$('#onairbutton').click(
+					function() {
+												window.location.href = 'indexb074.html?page=onair';
+								
+						return false;
+					}
+					);
+					
+			
+			   		$(document).delegate('.button',"mouseenter",
+					function() {
+						$(this).stop(true, false).animate({
+							'background-color': '#1362D8'
+						},100);
+					}
+					);
+				
+					
+					$(document).delegate('.button',"mouseleave",
+					function() {
+						$(this).stop(true, false).animate({
+							'background-color' : '#0055bf'
+						},100);
+					}
+					);
+					
+					$(document).delegate('.button',"mousedown",
+					function() {
+						$(this).stop(true, false).animate({
+							'background-color' : '#0F4CA8'
+						},50);
+					}
+					);
+					
+					$(document).delegate('.button',"mouseup",
+					function() {
+						$(this).stop(true, false).animate({
+							'background-color': '#1362D8'						
+						},50);
+					}
+					);								
+			
+					$(document).delegate('.button_blue',"mouseenter",
+					function() {
+						$(this).stop(true, false).animate({
+							'background-color': '#e0e0e0'
+						},100);
+					}
+					);
+				
+					
+					$(document).delegate('.button_blue',"mouseleave",
+					function() {
+						$(this).stop(true, false).animate({
+							'background-color' : '#c8c8c8'
+						},100);
+					}
+					);
+					
+					$(document).delegate('.button_blue',"mousedown",
+					function() {
+						$(this).stop(true, false).animate({
+							'background-color' : '#adadad'
+						},50);
+					}
+					);
+					
+					$(document).delegate('.button_blue',"mouseup",
+					function() {
+						$(this).stop(true, false).animate({
+							'background-color': '#e0e0e0'						
+						},50);
+					}
+					);		
+					
+					
+					$(document).delegate('.dj',"mouseenter",
+					function() {
+						$(this).animate({
+							'background-color': '#e0e0e0'
+						},{duration: 100, queue: false});
+					}
+					);
+				
+					
+					$(document).delegate('.dj',"mouseleave",
+					function() {
+						$(this).animate({
+							'background-color' : '#c8c8c8'
+						},{duration: 100, queue: false});
+					}
+					);
+					
+					$(document).delegate('.dj',"mousedown",
+					function() {
+						$(this).animate({
+							'background-color' : '#adadad'
+						},{duration: 50, queue: false});
+					}
+					);
+					
+					$(document).delegate('.dj',"mouseup",
+					function() {
+						$(this).animate({
+							'background-color': '#e0e0e0'						
+						},{duration: 50, queue: false});
+					}
+					);						
+					
+					function sendsong(e) {
+						e.preventDefault();
+						$.ajax({
+							type: 'POST',
+							cache: false,
+							url: 'function/songrequest.php?action=submit',
+							data: 'id=songrequestform&' + $('#songrequestform').serialize(),
+							success: function(msg) {
+								if(msg == "success") {
+									mkpopup("Success","Your song request was successfully sent! Please check the on-air schedule for a live DJ to make sure your request gets played.",210,160, true, 6500);
+								}
+								else if(msg == "blank") {
+									mkpopup("Missing Info","Please fill out all fields.",210,70, true, 2000);
+								}
+							}
+						});
+					}
+					
+					$(document).delegate('#submitsongrequest',"click", function(e) {						
+						sendsong(e);
+						return false;
+					});
+					
+					$(document).delegate('#songrequestform',"submit", function(e) {												
+						sendsong(e);
+						return false;
+					});
+					
+					
+					$(document).delegate('.newsitem_ball',"mouseenter",
+					function() {
+						$(this).stop(true, false).animate({
+							'background-color': '#e0e0e0'
+						},100);
+					}
+					);
+				
+					
+					$(document).delegate('.newsitem_ball',"mouseleave",
+					function() {
+						$(this).stop(true, false).animate({
+							'background-color' : '#c8c8c8'
+						},100);
+					}
+					);
+					
+					$(document).delegate('.newsitem_ball',"mousedown",
+					function() {
+						$(this).stop(true, false).animate({
+							'background-color' : '#adadad'
+						},50);
+					}
+					);
+					
+										$('#djondemand45button').click(function() {
+												$('#djondemand39').css({"display" : "none"});
+												$('#djondemand38').css({"display" : "none"});
+												$('#djondemand41').css({"display" : "none"});
+												$('#djondemand33').css({"display" : "none"});
+												$('#djondemand46').css({"display" : "none"});
+												$('#djondemand35').css({"display" : "none"});
+												$('#djondemand34').css({"display" : "none"});
+												$('#djondemand29').css({"display" : "none"});
+												$('#djondemand30').css({"display" : "none"});
+												$('#djondemand31').css({"display" : "none"});
+												$('#djondemand36').css({"display" : "none"});
+												$('#djondemand32').css({"display" : "none"});
+												$('#djondemand28').css({"display" : "none"});
+												$('#djondemand26').css({"display" : "none"});
+												$('#djondemand27').css({"display" : "none"});
+												$('#djondemand40').css({"display" : "none"});
+												$('#djondemand42').css({"display" : "none"});
+												$('#djondemand43').css({"display" : "none"});
+												$('#djondemand44').css({"display" : "none"});
+												$('#djondemand47').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from Ethan Browning");
+						$('#djondemand45').fadeIn(250);
+					});
+										$('#djondemand39button').click(function() {
+												$('#djondemand45').css({"display" : "none"});
+												$('#djondemand38').css({"display" : "none"});
+												$('#djondemand41').css({"display" : "none"});
+												$('#djondemand33').css({"display" : "none"});
+												$('#djondemand46').css({"display" : "none"});
+												$('#djondemand35').css({"display" : "none"});
+												$('#djondemand34').css({"display" : "none"});
+												$('#djondemand29').css({"display" : "none"});
+												$('#djondemand30').css({"display" : "none"});
+												$('#djondemand31').css({"display" : "none"});
+												$('#djondemand36').css({"display" : "none"});
+												$('#djondemand32').css({"display" : "none"});
+												$('#djondemand28').css({"display" : "none"});
+												$('#djondemand26').css({"display" : "none"});
+												$('#djondemand27').css({"display" : "none"});
+												$('#djondemand40').css({"display" : "none"});
+												$('#djondemand42').css({"display" : "none"});
+												$('#djondemand43').css({"display" : "none"});
+												$('#djondemand44').css({"display" : "none"});
+												$('#djondemand47').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from Ron ");
+						$('#djondemand39').fadeIn(250);
+					});
+										$('#djondemand38button').click(function() {
+												$('#djondemand45').css({"display" : "none"});
+												$('#djondemand39').css({"display" : "none"});
+												$('#djondemand41').css({"display" : "none"});
+												$('#djondemand33').css({"display" : "none"});
+												$('#djondemand46').css({"display" : "none"});
+												$('#djondemand35').css({"display" : "none"});
+												$('#djondemand34').css({"display" : "none"});
+												$('#djondemand29').css({"display" : "none"});
+												$('#djondemand30').css({"display" : "none"});
+												$('#djondemand31').css({"display" : "none"});
+												$('#djondemand36').css({"display" : "none"});
+												$('#djondemand32').css({"display" : "none"});
+												$('#djondemand28').css({"display" : "none"});
+												$('#djondemand26').css({"display" : "none"});
+												$('#djondemand27').css({"display" : "none"});
+												$('#djondemand40').css({"display" : "none"});
+												$('#djondemand42').css({"display" : "none"});
+												$('#djondemand43').css({"display" : "none"});
+												$('#djondemand44').css({"display" : "none"});
+												$('#djondemand47').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from Simon ");
+						$('#djondemand38').fadeIn(250);
+					});
+										$('#djondemand41button').click(function() {
+												$('#djondemand45').css({"display" : "none"});
+												$('#djondemand39').css({"display" : "none"});
+												$('#djondemand38').css({"display" : "none"});
+												$('#djondemand33').css({"display" : "none"});
+												$('#djondemand46').css({"display" : "none"});
+												$('#djondemand35').css({"display" : "none"});
+												$('#djondemand34').css({"display" : "none"});
+												$('#djondemand29').css({"display" : "none"});
+												$('#djondemand30').css({"display" : "none"});
+												$('#djondemand31').css({"display" : "none"});
+												$('#djondemand36').css({"display" : "none"});
+												$('#djondemand32').css({"display" : "none"});
+												$('#djondemand28').css({"display" : "none"});
+												$('#djondemand26').css({"display" : "none"});
+												$('#djondemand27').css({"display" : "none"});
+												$('#djondemand40').css({"display" : "none"});
+												$('#djondemand42').css({"display" : "none"});
+												$('#djondemand43').css({"display" : "none"});
+												$('#djondemand44').css({"display" : "none"});
+												$('#djondemand47').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from Breanna");
+						$('#djondemand41').fadeIn(250);
+					});
+										$('#djondemand33button').click(function() {
+												$('#djondemand45').css({"display" : "none"});
+												$('#djondemand39').css({"display" : "none"});
+												$('#djondemand38').css({"display" : "none"});
+												$('#djondemand41').css({"display" : "none"});
+												$('#djondemand46').css({"display" : "none"});
+												$('#djondemand35').css({"display" : "none"});
+												$('#djondemand34').css({"display" : "none"});
+												$('#djondemand29').css({"display" : "none"});
+												$('#djondemand30').css({"display" : "none"});
+												$('#djondemand31').css({"display" : "none"});
+												$('#djondemand36').css({"display" : "none"});
+												$('#djondemand32').css({"display" : "none"});
+												$('#djondemand28').css({"display" : "none"});
+												$('#djondemand26').css({"display" : "none"});
+												$('#djondemand27').css({"display" : "none"});
+												$('#djondemand40').css({"display" : "none"});
+												$('#djondemand42').css({"display" : "none"});
+												$('#djondemand43').css({"display" : "none"});
+												$('#djondemand44').css({"display" : "none"});
+												$('#djondemand47').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from Gio");
+						$('#djondemand33').fadeIn(250);
+					});
+										$('#djondemand46button').click(function() {
+												$('#djondemand45').css({"display" : "none"});
+												$('#djondemand39').css({"display" : "none"});
+												$('#djondemand38').css({"display" : "none"});
+												$('#djondemand41').css({"display" : "none"});
+												$('#djondemand33').css({"display" : "none"});
+												$('#djondemand35').css({"display" : "none"});
+												$('#djondemand34').css({"display" : "none"});
+												$('#djondemand29').css({"display" : "none"});
+												$('#djondemand30').css({"display" : "none"});
+												$('#djondemand31').css({"display" : "none"});
+												$('#djondemand36').css({"display" : "none"});
+												$('#djondemand32').css({"display" : "none"});
+												$('#djondemand28').css({"display" : "none"});
+												$('#djondemand26').css({"display" : "none"});
+												$('#djondemand27').css({"display" : "none"});
+												$('#djondemand40').css({"display" : "none"});
+												$('#djondemand42').css({"display" : "none"});
+												$('#djondemand43').css({"display" : "none"});
+												$('#djondemand44').css({"display" : "none"});
+												$('#djondemand47').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from Kevin G");
+						$('#djondemand46').fadeIn(250);
+					});
+										$('#djondemand35button').click(function() {
+												$('#djondemand45').css({"display" : "none"});
+												$('#djondemand39').css({"display" : "none"});
+												$('#djondemand38').css({"display" : "none"});
+												$('#djondemand41').css({"display" : "none"});
+												$('#djondemand33').css({"display" : "none"});
+												$('#djondemand46').css({"display" : "none"});
+												$('#djondemand34').css({"display" : "none"});
+												$('#djondemand29').css({"display" : "none"});
+												$('#djondemand30').css({"display" : "none"});
+												$('#djondemand31').css({"display" : "none"});
+												$('#djondemand36').css({"display" : "none"});
+												$('#djondemand32').css({"display" : "none"});
+												$('#djondemand28').css({"display" : "none"});
+												$('#djondemand26').css({"display" : "none"});
+												$('#djondemand27').css({"display" : "none"});
+												$('#djondemand40').css({"display" : "none"});
+												$('#djondemand42').css({"display" : "none"});
+												$('#djondemand43').css({"display" : "none"});
+												$('#djondemand44').css({"display" : "none"});
+												$('#djondemand47').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from Bailey");
+						$('#djondemand35').fadeIn(250);
+					});
+										$('#djondemand34button').click(function() {
+												$('#djondemand45').css({"display" : "none"});
+												$('#djondemand39').css({"display" : "none"});
+												$('#djondemand38').css({"display" : "none"});
+												$('#djondemand41').css({"display" : "none"});
+												$('#djondemand33').css({"display" : "none"});
+												$('#djondemand46').css({"display" : "none"});
+												$('#djondemand35').css({"display" : "none"});
+												$('#djondemand29').css({"display" : "none"});
+												$('#djondemand30').css({"display" : "none"});
+												$('#djondemand31').css({"display" : "none"});
+												$('#djondemand36').css({"display" : "none"});
+												$('#djondemand32').css({"display" : "none"});
+												$('#djondemand28').css({"display" : "none"});
+												$('#djondemand26').css({"display" : "none"});
+												$('#djondemand27').css({"display" : "none"});
+												$('#djondemand40').css({"display" : "none"});
+												$('#djondemand42').css({"display" : "none"});
+												$('#djondemand43').css({"display" : "none"});
+												$('#djondemand44').css({"display" : "none"});
+												$('#djondemand47').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from Brandon");
+						$('#djondemand34').fadeIn(250);
+					});
+										$('#djondemand29button').click(function() {
+												$('#djondemand45').css({"display" : "none"});
+												$('#djondemand39').css({"display" : "none"});
+												$('#djondemand38').css({"display" : "none"});
+												$('#djondemand41').css({"display" : "none"});
+												$('#djondemand33').css({"display" : "none"});
+												$('#djondemand46').css({"display" : "none"});
+												$('#djondemand35').css({"display" : "none"});
+												$('#djondemand34').css({"display" : "none"});
+												$('#djondemand30').css({"display" : "none"});
+												$('#djondemand31').css({"display" : "none"});
+												$('#djondemand36').css({"display" : "none"});
+												$('#djondemand32').css({"display" : "none"});
+												$('#djondemand28').css({"display" : "none"});
+												$('#djondemand26').css({"display" : "none"});
+												$('#djondemand27').css({"display" : "none"});
+												$('#djondemand40').css({"display" : "none"});
+												$('#djondemand42').css({"display" : "none"});
+												$('#djondemand43').css({"display" : "none"});
+												$('#djondemand44').css({"display" : "none"});
+												$('#djondemand47').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from Shaun");
+						$('#djondemand29').fadeIn(250);
+					});
+										$('#djondemand30button').click(function() {
+												$('#djondemand45').css({"display" : "none"});
+												$('#djondemand39').css({"display" : "none"});
+												$('#djondemand38').css({"display" : "none"});
+												$('#djondemand41').css({"display" : "none"});
+												$('#djondemand33').css({"display" : "none"});
+												$('#djondemand46').css({"display" : "none"});
+												$('#djondemand35').css({"display" : "none"});
+												$('#djondemand34').css({"display" : "none"});
+												$('#djondemand29').css({"display" : "none"});
+												$('#djondemand31').css({"display" : "none"});
+												$('#djondemand36').css({"display" : "none"});
+												$('#djondemand32').css({"display" : "none"});
+												$('#djondemand28').css({"display" : "none"});
+												$('#djondemand26').css({"display" : "none"});
+												$('#djondemand27').css({"display" : "none"});
+												$('#djondemand40').css({"display" : "none"});
+												$('#djondemand42').css({"display" : "none"});
+												$('#djondemand43').css({"display" : "none"});
+												$('#djondemand44').css({"display" : "none"});
+												$('#djondemand47').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from David");
+						$('#djondemand30').fadeIn(250);
+					});
+										$('#djondemand31button').click(function() {
+												$('#djondemand45').css({"display" : "none"});
+												$('#djondemand39').css({"display" : "none"});
+												$('#djondemand38').css({"display" : "none"});
+												$('#djondemand41').css({"display" : "none"});
+												$('#djondemand33').css({"display" : "none"});
+												$('#djondemand46').css({"display" : "none"});
+												$('#djondemand35').css({"display" : "none"});
+												$('#djondemand34').css({"display" : "none"});
+												$('#djondemand29').css({"display" : "none"});
+												$('#djondemand30').css({"display" : "none"});
+												$('#djondemand36').css({"display" : "none"});
+												$('#djondemand32').css({"display" : "none"});
+												$('#djondemand28').css({"display" : "none"});
+												$('#djondemand26').css({"display" : "none"});
+												$('#djondemand27').css({"display" : "none"});
+												$('#djondemand40').css({"display" : "none"});
+												$('#djondemand42').css({"display" : "none"});
+												$('#djondemand43').css({"display" : "none"});
+												$('#djondemand44').css({"display" : "none"});
+												$('#djondemand47').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from Collin");
+						$('#djondemand31').fadeIn(250);
+					});
+										$('#djondemand36button').click(function() {
+												$('#djondemand45').css({"display" : "none"});
+												$('#djondemand39').css({"display" : "none"});
+												$('#djondemand38').css({"display" : "none"});
+												$('#djondemand41').css({"display" : "none"});
+												$('#djondemand33').css({"display" : "none"});
+												$('#djondemand46').css({"display" : "none"});
+												$('#djondemand35').css({"display" : "none"});
+												$('#djondemand34').css({"display" : "none"});
+												$('#djondemand29').css({"display" : "none"});
+												$('#djondemand30').css({"display" : "none"});
+												$('#djondemand31').css({"display" : "none"});
+												$('#djondemand32').css({"display" : "none"});
+												$('#djondemand28').css({"display" : "none"});
+												$('#djondemand26').css({"display" : "none"});
+												$('#djondemand27').css({"display" : "none"});
+												$('#djondemand40').css({"display" : "none"});
+												$('#djondemand42').css({"display" : "none"});
+												$('#djondemand43').css({"display" : "none"});
+												$('#djondemand44').css({"display" : "none"});
+												$('#djondemand47').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from Connor");
+						$('#djondemand36').fadeIn(250);
+					});
+										$('#djondemand32button').click(function() {
+												$('#djondemand45').css({"display" : "none"});
+												$('#djondemand39').css({"display" : "none"});
+												$('#djondemand38').css({"display" : "none"});
+												$('#djondemand41').css({"display" : "none"});
+												$('#djondemand33').css({"display" : "none"});
+												$('#djondemand46').css({"display" : "none"});
+												$('#djondemand35').css({"display" : "none"});
+												$('#djondemand34').css({"display" : "none"});
+												$('#djondemand29').css({"display" : "none"});
+												$('#djondemand30').css({"display" : "none"});
+												$('#djondemand31').css({"display" : "none"});
+												$('#djondemand36').css({"display" : "none"});
+												$('#djondemand28').css({"display" : "none"});
+												$('#djondemand26').css({"display" : "none"});
+												$('#djondemand27').css({"display" : "none"});
+												$('#djondemand40').css({"display" : "none"});
+												$('#djondemand42').css({"display" : "none"});
+												$('#djondemand43').css({"display" : "none"});
+												$('#djondemand44').css({"display" : "none"});
+												$('#djondemand47').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from RichieD");
+						$('#djondemand32').fadeIn(250);
+					});
+										$('#djondemand28button').click(function() {
+												$('#djondemand45').css({"display" : "none"});
+												$('#djondemand39').css({"display" : "none"});
+												$('#djondemand38').css({"display" : "none"});
+												$('#djondemand41').css({"display" : "none"});
+												$('#djondemand33').css({"display" : "none"});
+												$('#djondemand46').css({"display" : "none"});
+												$('#djondemand35').css({"display" : "none"});
+												$('#djondemand34').css({"display" : "none"});
+												$('#djondemand29').css({"display" : "none"});
+												$('#djondemand30').css({"display" : "none"});
+												$('#djondemand31').css({"display" : "none"});
+												$('#djondemand36').css({"display" : "none"});
+												$('#djondemand32').css({"display" : "none"});
+												$('#djondemand26').css({"display" : "none"});
+												$('#djondemand27').css({"display" : "none"});
+												$('#djondemand40').css({"display" : "none"});
+												$('#djondemand42').css({"display" : "none"});
+												$('#djondemand43').css({"display" : "none"});
+												$('#djondemand44').css({"display" : "none"});
+												$('#djondemand47').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from Eric");
+						$('#djondemand28').fadeIn(250);
+					});
+										$('#djondemand26button').click(function() {
+												$('#djondemand45').css({"display" : "none"});
+												$('#djondemand39').css({"display" : "none"});
+												$('#djondemand38').css({"display" : "none"});
+												$('#djondemand41').css({"display" : "none"});
+												$('#djondemand33').css({"display" : "none"});
+												$('#djondemand46').css({"display" : "none"});
+												$('#djondemand35').css({"display" : "none"});
+												$('#djondemand34').css({"display" : "none"});
+												$('#djondemand29').css({"display" : "none"});
+												$('#djondemand30').css({"display" : "none"});
+												$('#djondemand31').css({"display" : "none"});
+												$('#djondemand36').css({"display" : "none"});
+												$('#djondemand32').css({"display" : "none"});
+												$('#djondemand28').css({"display" : "none"});
+												$('#djondemand27').css({"display" : "none"});
+												$('#djondemand40').css({"display" : "none"});
+												$('#djondemand42').css({"display" : "none"});
+												$('#djondemand43').css({"display" : "none"});
+												$('#djondemand44').css({"display" : "none"});
+												$('#djondemand47').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from Bradley");
+						$('#djondemand26').fadeIn(250);
+					});
+										$('#djondemand27button').click(function() {
+												$('#djondemand45').css({"display" : "none"});
+												$('#djondemand39').css({"display" : "none"});
+												$('#djondemand38').css({"display" : "none"});
+												$('#djondemand41').css({"display" : "none"});
+												$('#djondemand33').css({"display" : "none"});
+												$('#djondemand46').css({"display" : "none"});
+												$('#djondemand35').css({"display" : "none"});
+												$('#djondemand34').css({"display" : "none"});
+												$('#djondemand29').css({"display" : "none"});
+												$('#djondemand30').css({"display" : "none"});
+												$('#djondemand31').css({"display" : "none"});
+												$('#djondemand36').css({"display" : "none"});
+												$('#djondemand32').css({"display" : "none"});
+												$('#djondemand28').css({"display" : "none"});
+												$('#djondemand26').css({"display" : "none"});
+												$('#djondemand40').css({"display" : "none"});
+												$('#djondemand42').css({"display" : "none"});
+												$('#djondemand43').css({"display" : "none"});
+												$('#djondemand44').css({"display" : "none"});
+												$('#djondemand47').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from Joshua");
+						$('#djondemand27').fadeIn(250);
+					});
+										$('#djondemand40button').click(function() {
+												$('#djondemand45').css({"display" : "none"});
+												$('#djondemand39').css({"display" : "none"});
+												$('#djondemand38').css({"display" : "none"});
+												$('#djondemand41').css({"display" : "none"});
+												$('#djondemand33').css({"display" : "none"});
+												$('#djondemand46').css({"display" : "none"});
+												$('#djondemand35').css({"display" : "none"});
+												$('#djondemand34').css({"display" : "none"});
+												$('#djondemand29').css({"display" : "none"});
+												$('#djondemand30').css({"display" : "none"});
+												$('#djondemand31').css({"display" : "none"});
+												$('#djondemand36').css({"display" : "none"});
+												$('#djondemand32').css({"display" : "none"});
+												$('#djondemand28').css({"display" : "none"});
+												$('#djondemand26').css({"display" : "none"});
+												$('#djondemand27').css({"display" : "none"});
+												$('#djondemand42').css({"display" : "none"});
+												$('#djondemand43').css({"display" : "none"});
+												$('#djondemand44').css({"display" : "none"});
+												$('#djondemand47').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from Marc ");
+						$('#djondemand40').fadeIn(250);
+					});
+										$('#djondemand42button').click(function() {
+												$('#djondemand45').css({"display" : "none"});
+												$('#djondemand39').css({"display" : "none"});
+												$('#djondemand38').css({"display" : "none"});
+												$('#djondemand41').css({"display" : "none"});
+												$('#djondemand33').css({"display" : "none"});
+												$('#djondemand46').css({"display" : "none"});
+												$('#djondemand35').css({"display" : "none"});
+												$('#djondemand34').css({"display" : "none"});
+												$('#djondemand29').css({"display" : "none"});
+												$('#djondemand30').css({"display" : "none"});
+												$('#djondemand31').css({"display" : "none"});
+												$('#djondemand36').css({"display" : "none"});
+												$('#djondemand32').css({"display" : "none"});
+												$('#djondemand28').css({"display" : "none"});
+												$('#djondemand26').css({"display" : "none"});
+												$('#djondemand27').css({"display" : "none"});
+												$('#djondemand40').css({"display" : "none"});
+												$('#djondemand43').css({"display" : "none"});
+												$('#djondemand44').css({"display" : "none"});
+												$('#djondemand47').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from Jon Griffin");
+						$('#djondemand42').fadeIn(250);
+					});
+										$('#djondemand43button').click(function() {
+												$('#djondemand45').css({"display" : "none"});
+												$('#djondemand39').css({"display" : "none"});
+												$('#djondemand38').css({"display" : "none"});
+												$('#djondemand41').css({"display" : "none"});
+												$('#djondemand33').css({"display" : "none"});
+												$('#djondemand46').css({"display" : "none"});
+												$('#djondemand35').css({"display" : "none"});
+												$('#djondemand34').css({"display" : "none"});
+												$('#djondemand29').css({"display" : "none"});
+												$('#djondemand30').css({"display" : "none"});
+												$('#djondemand31').css({"display" : "none"});
+												$('#djondemand36').css({"display" : "none"});
+												$('#djondemand32').css({"display" : "none"});
+												$('#djondemand28').css({"display" : "none"});
+												$('#djondemand26').css({"display" : "none"});
+												$('#djondemand27').css({"display" : "none"});
+												$('#djondemand40').css({"display" : "none"});
+												$('#djondemand42').css({"display" : "none"});
+												$('#djondemand44').css({"display" : "none"});
+												$('#djondemand47').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from Josh Riley");
+						$('#djondemand43').fadeIn(250);
+					});
+										$('#djondemand44button').click(function() {
+												$('#djondemand45').css({"display" : "none"});
+												$('#djondemand39').css({"display" : "none"});
+												$('#djondemand38').css({"display" : "none"});
+												$('#djondemand41').css({"display" : "none"});
+												$('#djondemand33').css({"display" : "none"});
+												$('#djondemand46').css({"display" : "none"});
+												$('#djondemand35').css({"display" : "none"});
+												$('#djondemand34').css({"display" : "none"});
+												$('#djondemand29').css({"display" : "none"});
+												$('#djondemand30').css({"display" : "none"});
+												$('#djondemand31').css({"display" : "none"});
+												$('#djondemand36').css({"display" : "none"});
+												$('#djondemand32').css({"display" : "none"});
+												$('#djondemand28').css({"display" : "none"});
+												$('#djondemand26').css({"display" : "none"});
+												$('#djondemand27').css({"display" : "none"});
+												$('#djondemand40').css({"display" : "none"});
+												$('#djondemand42').css({"display" : "none"});
+												$('#djondemand43').css({"display" : "none"});
+												$('#djondemand47').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from Vincent Das");
+						$('#djondemand44').fadeIn(250);
+					});
+										$('#djondemand47button').click(function() {
+												$('#djondemand45').css({"display" : "none"});
+												$('#djondemand39').css({"display" : "none"});
+												$('#djondemand38').css({"display" : "none"});
+												$('#djondemand41').css({"display" : "none"});
+												$('#djondemand33').css({"display" : "none"});
+												$('#djondemand46').css({"display" : "none"});
+												$('#djondemand35').css({"display" : "none"});
+												$('#djondemand34').css({"display" : "none"});
+												$('#djondemand29').css({"display" : "none"});
+												$('#djondemand30').css({"display" : "none"});
+												$('#djondemand31').css({"display" : "none"});
+												$('#djondemand36').css({"display" : "none"});
+												$('#djondemand32').css({"display" : "none"});
+												$('#djondemand28').css({"display" : "none"});
+												$('#djondemand26').css({"display" : "none"});
+												$('#djondemand27').css({"display" : "none"});
+												$('#djondemand40').css({"display" : "none"});
+												$('#djondemand42').css({"display" : "none"});
+												$('#djondemand43').css({"display" : "none"});
+												$('#djondemand44').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from Sachin Goenka");
+						$('#djondemand47').fadeIn(250);
+					});
+										
+					$(document).delegate('.newsitem_ball',"mouseup",
+					function() {
+						$(this).stop(true, false).animate({
+							'background-color': '#e0e0e0'						
+						},50);
+					}
+					);	
+					
+					
+					$('#userareabutton').click(function() {
+						window.location.href = "indexbc82.html?content=userarea";
+					});
+					
+					$('#adminareabutton').click(function() {
+						window.location.href = "index78cc.html?content=adminarea";
+					});
+					
+					$('#djareabutton').click(function() {
+						window.location.href = "index413b.html?content=djarea";
+					});
+					
+					$('#songrequestsbutton').click(function() {
+						window.location.href = "index7e05.html?content=songrequests";
+					});
+					
+					$('#usermanagerbutton').click(function() {
+						window.location.href = "indexd014.html?content=usermanager";
+					});
+			
+					$('#startlistening').click(
+					function() {
+						if(listenmode == 0) {
+							$('#startlistening').html("<img src='images/img_pause.png'/>");						
+							listenmode = 1;
+							player.volume = volume;
+							player.play();
+						}
+						else {
+							$('#startlistening').html("<img src='images/img_play.png'/>");
+							player.volume = 0;
+							listenmode = 0;
+						}
+						$.ajax({
+							url:"/function/session.php?playing=" + listenmode,
+							type:'GET'
+						});
+					}
+					);
+					
+					function hide_onair(whichtoshow) {
+						$('#mondayschedule').css({"display" : "none"});
+						$('#tuesdayschedule').css({"display" : "none"});
+						$('#wednesdayschedule').css({"display" : "none"});
+						$('#thursdayschedule').css({"display" : "none"});
+						$('#fridayschedule').css({"display" : "none"});
+						$('#saturdayschedule').css({"display" : "none"});
+						$('#sundayschedule').css({"display" : "none"});
+						$(whichtoshow).fadeIn(250);
+					}
+					
+					$('#mondaybutton').click(
+					function() {
+						hide_onair('#mondayschedule');
+						$('#whichday').html("Monday's Schedule");
+					}
+					);
+					
+					$('#tuesdaybutton').click(
+					function() {
+						hide_onair('#tuesdayschedule');
+						$('#whichday').html("Tuesday's Schedule");
+					}
+					);
+					
+					$('#wednesdaybutton').click(
+					function() {
+						hide_onair('#wednesdayschedule');
+						$('#whichday').html("Wednesday's Schedule");
+					}
+					);
+					
+					$('#thursdaybutton').click(
+					function() {
+						hide_onair('#thursdayschedule');
+						$('#whichday').html("Thursday's Schedule");
+					}
+					);
+					
+					$('#fridaybutton').click(
+					function() {
+						hide_onair('#fridayschedule');
+						$('#whichday').html("Friday's Schedule");
+					}				
+					);
+					
+					$('#saturdaybutton').click(
+					function() {
+						hide_onair('#saturdayschedule');
+						$('#whichday').html("Saturday's Schedule");
+					}
+					);
+					
+					$('#sundaybutton').click(
+					function() {
+						hide_onair('#sundayschedule');
+						$('#whichday').html("Sunday's Schedule");
+					}
+					);
+					
+					$('#songrequestbutton').click(
+					function() {
+						mkpopup("Request a Song","Please be aware, song requests can only be honored when a scheduled show is taking place.<br/><br/><form action='#' id='songrequestform' name='songrequestform'><input type='text' placeholder='Your Name'  name='name' style='width:200px'/><br/><br/><input type='text' placeholder='Artist Name' name='artistname' style='width:200px'/><br/><br/><input type='text' placeholder='Song Name' name='songname' style='width:200px'/><br/><br/><input type='text' placeholder='Comments' name='comments' style='width:200px'/><br/><br/>Notify me via SMS when my request is about to play. <input type='checkbox' name='notifyviasms' value='yes'/><br/><br/><input type='text' placeholder='Phone Number' name='phonenumber' style='width:200px'/><br/>You don't need to provide a country code for most providers.<br/><br/>Cell Service Provider <select name='smsgateway' style='width:213px'><option value='msg.acsalaska.com'>ACS Alaska</option><option value='message.alltel.com'>Alltel</option><option value='paging.acswireless.com'>Ameritech</option><option value='archwireless.net'>Arch</option><option value='txt.att.net'>AT&T</option><option value='txt.bellmobility.ca'>Bell Canada</option><option value='blueskyfrog.com'>Blue Sky Frog</option><option value='myboostmobile.com'>Boost</option><option value='cwwsms.com'>Carolina West</option><option value='mobile.celloneusa.com'>Cellular One</option><option value='csouth1.com'>Cellular South</option><option value='gocbw.com'>Cincinnati Bell</option><option value='mobile.mycingular.com'>Cingular</option><option value='mmode.com'>Cingular Blue</option><option value='clarotorpedo.com.br'>Claro</option><option value='sms.comviq.se'>Comviq</option><option value='mms.mycricket.com'>Cricket</option><option value='sms.edgewireless.com'>Edge</option><option value='einsteinsms.com'>Einstein PCS</option><option value='fido.ca'>Fido</option><option value='immixmail.com'>Immix</option><option value='mymetropcs.com'>Metro PCS</option><option value='m1.com.sg'>Mobile One</option><option value='sms.co.za'>MTN Africa</option><option value='messaging.nextel.com'>Nextel</option><option value='pcs.ntelos.com'>Ntelos</option><option value='optusmobile.com.html'>Optus</option><option value='orange.net'>Orange</option><option value='orange.html'>Orange Poland</option><option value='text.plusgsm.html'>Plus Poland</option><option value='qwestmp.com'>Qwest</option><option value='pcs.rogers.com'>Rogers</option><option value='pcs.sasktelmobility.com'>Sasktel</option><option value='mysmart.mymobile.ph'>Smart</option><option value='mysmart.mymobile.ph'>Smart Telecom</option><option value='page.southernlinc.com'>Southern Linc</option><option value='messaging.sprintpcs.com'>Sprint</option><option value='tms.suncom.com'>SunCom</option><option value='mobile.surewest.com'>Sure West</option><option value='bluewin.ch'>SwissCom</option><option value='tmomail.net'>T-Mobile</option><option value='T-D1-SMS.de'>T-Mobile (German)</option><option value='t-mobile.uk.net'>T-Mobile UK</option><option value='tbayteltxt.net'>TBayTel</option><option value='mobilpost.no'>Telenor</option><option value='msg.telus.com'>Telus</option><option value='timnet.com'>Tim</option><option value='utext.com'>Unicel</option><option value='vmobile.ca'>V Mobile CA</option><option value='vtext.com'>Verizon</option><option value='vmobl.com'>Virgin Mobile</option><option value='voda.co.za'>Vodacom Africa</option><option value='vodafone.net'>Vodafone</option><option value='sms.vodafone.it'>Vodafone Italy</option><option value='sms.welcome2well.com'>WellCom</option></select><br/><br/><div id='test' class='button_blue songrequestcancel' style='float:left'>Cancel</div><div id='submitsongrequest' class='button_blue songrequestsend' style='float:right'>Send</div><input type='submit' style='position: absolute; left: -9999px; width: 1px; height: 1px;'/></form>",210,665,false, 0);
+					}
+					);
+					
+					$('.dj_biopage').click(
+					function() {
+						if($(this).height() == 235) {							
+							$(this).animate({								
+								"height" : (($(document.getElementById(this.id + 'bio')).height() + 250) + "px")
+							}, {duration: 100, queue: false});
+							
+							
+						}
+						else {
+							$(this).animate({
+								"height" : "235px"
+							}, {duration: 100, queue: false});
+						}
+					}
+					);
+					
+					
+					
+					$(document).delegate('.songrequestcancel',"click",
+					function() {
+						rmpopup();
+					}
+					);
+			
+					$('#signoutbutton').click(
+					function() {						
+						window.location.href = 'index.html?action=logout';
+					}				
+					);
+					
+					function mkpopup(title, content, width, height, autofadeout, autofadeouttime) {		
+						if(popup_state == 1)
+							rmpopup();			
+						popup_state = 1;
+						$('#overlaypopup').html("<h1>" + title + "</h1>" + content);
+						$('#overlaypopup').attr("style", "height:" + height + "px;width:" + width + "px");
+						$('#overlaydiv').stop(true, false).fadeIn(250);
+						$('#overlaypopup').stop(true, false).fadeIn(250);
+						if(autofadeout == true) {
+							$('#overlaypopup').stop(true, false).delay(autofadeouttime).fadeOut(250);
+							$('#overlaydiv').stop(true, false).delay(autofadeouttime).fadeOut(250);
+							popup_state = 0;
+						}
+					}
+					
+					function rmpopup() {
+						popup_state = 0;
+						$('#overlaypopup').stop(true, false).fadeOut(250);
+						$('#overlaydiv').stop(true, false).fadeOut(250);
+					}	
+					
+				});
+		</script>        
+	</head>
+    <body>
+    <div style='position:absolute;display:block;background:URL("images/img_header_lines.png");background-repeat:repeat-x;top:248px;width:100%;height:31px;left:0;'></div>
+	<div id="overlaydiv" class="overlay">
+	</div>
+	<div id="overlaypopup" class="overlay_popup"></div>	
+            <div class="header">
+                <div class="headerbox">
+                    <a href="index.html"><img alt="logo" src="images/site_logo.png" style="padding-top:38px;padding-left:0"/></a>
+                </div>                                
+            </div>            
+            <div class="menu" style="clear:both">
+	            <div class="sitebox">
+	            	<a href='index.html'><div class="menuitem" id='homebutton'>HOME</div></a>
+                    <a href='index7f62.html?content=feedback'><div class="menuitem" id='feedbackbutton'>FEEDBACK</div></a>
+                    <div class="menuitem" id='onairbutton'>ON-AIR SCHEDULE</div>
+                    <div class="menuitem" id='meetdjbutton'>MEET THE DJ'S</div>
+                </div>
+            </div>            
+            <div class="barnowplaying" style="clear:both;">
+            	<div class="sitebox">
+                    <div class="button" style="margin-top:-6px;padding:0;height:39px;width:39px" id="startlistening" ><img src='images/img_play.png'/></div>
+                    <div style="display:inline-block;width:851px;position:relative;">
+						<div style='margin-top:-13px;position:absolute;'>                        
+                            <div class='_jsr'><input style='width:146px;' class='volctrl' type="range" value="25" id="volumecontrol"/></div>
+                            <div style="width:550px;" class='div_now_playing' id="nowplaying"></div>
+	                    </div>
+	                </div>
+                    <div id="autodjformbutton" class="button" onClick="go_to_autodj_form();" style='display:none;height:22px;padding-top:11px;padding-bottom:5px;margin:0;float:right;margin-top:-25px;color:#FFFFFF;'>
+                    AutoDJ Song Form
+                    </div>
+                    <div id="songrequestbutton" class="button" style='height:22px;padding-top:11px;padding-bottom:5px;margin:0;float:right;margin-top:-25px;color:#FFFFFF;display:none'>
+                    Request a Song
+                    </div>
+            </div>
+            </div>
+        
+		<div class="sitebox">
+        			<div id="topmaster" style="background-color:#FFFFFF;position:fixed;width:950px;z-index:999999;top:0">
+				<div id="loginpulldowntab" class="toptab">Staff Sign In</div>
+				<div id="topsignin" class="top_signin" style="top:-70px;height:65px ">
+                					<form id='signinform' action="https://jetstreamradio.com/function/login.php?action=login" method="post">
+						<input type='email' tabindex=1 name="email" placeholder="Email Address" style="float:left;margin-top:2px;margin-left:2px;width:165px"/><input tabindex=2 type='password' name="password" placeholder="Password" style="float:left;margin-top:2px;margin-left:7px;margin-right:7px;width:165px"/>
+						<div class="button" style="float:right;margin-right:3px;margin-top:1px" onClick="document.getElementById('signinform').submit();">Sign In</div>
+                        <div style="clear:both"></div>
+						<input type="submit" tabindex=4 style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
+						<div style="display:inline;float:left;padding:3px"><input tabindex=3 value="rememberme" type='checkbox' name="rememberme"/>Remember Me</div>
+                        <!--<div style="display:inline;float:right;padding:3px"><a href='https://jetstreamradio.com/?content=register'>Register/Lost Password</a></div>-->
+						<div style="color:#FF0000;display:none;float:right;padding:3px">Your credentials were invalid.</div>
+                        
+					</form>
+                				</div>                
+			</div>
+			<div class="mainbox" style="margin-top:27px">
+              	                 <script>
+function set_stars(star) {
+	document.getElementById('stars').value = star;
+	switch(star) {
+		case 2:
+			document.getElementById('star_1').src = 'images/rating_checked.png';			
+			document.getElementById('star_2').src = 'images/rating_checked.png';			
+			document.getElementById('star_3').src = 'images/rating_unchecked.png';			
+			document.getElementById('star_4').src = 'images/rating_unchecked.png';			
+			document.getElementById('star_5').src = 'images/rating_unchecked.png';			
+			break;
+		case 3:
+			document.getElementById('star_1').src = 'images/rating_checked.png';			
+			document.getElementById('star_2').src = 'images/rating_checked.png';			
+			document.getElementById('star_3').src = 'images/rating_checked.png';			
+			document.getElementById('star_4').src = 'images/rating_unchecked.png';			
+			document.getElementById('star_5').src = 'images/rating_unchecked.png';
+			break;
+		case 4:
+			document.getElementById('star_1').src = 'images/rating_checked.png';			
+			document.getElementById('star_2').src = 'images/rating_checked.png';			
+			document.getElementById('star_3').src = 'images/rating_checked.png';			
+			document.getElementById('star_4').src = 'images/rating_checked.png';			
+			document.getElementById('star_5').src = 'images/rating_unchecked.png';
+			break;
+		case 5:
+			document.getElementById('star_1').src = 'images/rating_checked.png';			
+			document.getElementById('star_2').src = 'images/rating_checked.png';			
+			document.getElementById('star_3').src = 'images/rating_checked.png';			
+			document.getElementById('star_4').src = 'images/rating_checked.png';			
+			document.getElementById('star_5').src = 'images/rating_checked.png';
+			break;
+		default:
+			document.getElementById('star_1').src = 'images/rating_checked.png';			
+			document.getElementById('star_2').src = 'images/rating_unchecked.png';			
+			document.getElementById('star_3').src = 'images/rating_unchecked.png';			
+			document.getElementById('star_4').src = 'images/rating_unchecked.png';			
+			document.getElementById('star_5').src = 'images/rating_unchecked.png';
+			break;
+	}
+}
+</script>
+<style>
+.star {
+	cursor:pointer;
+	height:29px;
+	margin-left:6px;
+	margin-right:6px;
+	display:inline;
+}
+</style>
+<div class="contentbox">
+ <div style="width:920px;text-align:center;font-size:14pt;color:#1058c4;margin-bottom:5px">Content Review Form</div>
+ <div style="width:920px;text-align:left;margin-bottom:5px"><b>Your review will be confidential.</b> Your name will not be given to DJ's or content authors. The information you submit will go directly to the JetStream Radio administration team.</div><br/><br/>
+            <form id="reviewform" action="https://jetstreamradio.com/function/review.php" method="post">
+	            <div style="width:460px;float:left;display:inline;margin-bottom:10px"><input  type='radio' name='formtype' value='DJ' style="float:left"/>DJ</div>
+                <div style="width:460px;float:right;display:inline;margin-bottom:10px"><input  type='radio' name='formtype' value='Live Show' style="float:left"/>Live Show</div>
+                <div style="clear:both"></div>
+  	            <div style="width:460px;float:left;display:inline;margin-bottom:10px"><input  type='radio' name='formtype' value='On-demand Content' style="float:left"/>On-demand Content</div>
+                <div style="width:460px;float:right;display:inline;margin-bottom:10px"><input  type='radio' name='formtype' value='Other' style="float:left"/>Other</div>
+                <div style="clear:both"><hr/></div>
+                
+                <input style="width:443px;float:left;display:inline;margin-bottom:10px"  type="text" name="name" placeholder="Name"/>            
+                <input style="width:443px;float:right;display:inline;margin-bottom:10px" type="email" name="email" placeholder="Email"/>            
+                <div style="clear:both"></div>
+                <input style="width:443px;float:left;display:inline;margin-bottom:10px" type="text"  name="subject" placeholder="Review Subject"/> 
+                <div style='display:inline-block;margin-left:10px;margin-top:4px;'>Rating:</div><div style="width:390px;float:right;display:inline;margin-bottom:10px"><input name="stars" id="stars" style="display:none"/><img onClick="set_stars(1);" class='star' id='star_1' src='images/rating_checked.png'/><img onClick="set_stars(2);" class='star' id='star_2' src='images/rating_checked.png'/><img onClick="set_stars(3);" class='star' id='star_3' src='images/rating_checked.png'/><img onClick="set_stars(4);" class='star' id='star_4' src='images/rating_unchecked.png'/><img onClick="set_stars(5);" class='star' id='star_5' src='images/rating_unchecked.png'/></div>                                                            
+                
+                <div id='txbreason' style='text-align:left;'>
+	                <div ><textarea style="width:910px;height:60px;float:left;margin-bottom:10px" name='additionalinformation' placeholder="Additional information (optional but appreciated)"></textarea></div>
+                </div>
+                
+                <div style="clear:both"><hr/></div>
+                <div class="g-recaptcha" data-sitekey="6LfEHAgTAAAAAJHQBfUQSsU3wXHUEK2DWuK1TLL_"></div>
+                <input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
+                <div onClick="document.getElementById('reviewform').submit();" class="button" style="float:right;display:inline;margin-top:5px">Submit</div>
+            </form>
+            <div style="float:left;color:red;margin-top:10px;color:red;display:none"></div>        
+      
+   </div>
+       	                	
+			</div>
+			<!-- footer -->
+			<div class="footer" style="color:#a0a0a0;font-size:10pt;margin-top:5px">
+				<div style="display:inline;float:left"><script type="text/javascript">                    
+                        var currd = new Date()
+                        document.write(currd.getFullYear())                     
+                    </script>
+                    <a href='http://tfdicorp.com/' target='_blank'>TFDi Corp</a>, All Rights Reserved. TFDi Corp  d.b.a. JetStream Radio.</p>              </div>
+				<div style="display:inline;float:right"><a target="_blank" href='mailto:admin@jetstreamradio.com'>admin@jetstreamradio.com</a></div>
+			</div>
+		</div>		
+	</body>
+
+<!-- Mirrored from jetstreamradio.com/?content=review by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 02:52:52 GMT -->
+</html>

@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<!-- Site developed by Collin Biedenkapp and Brandon Filer of TFDi Design -->
+<html>
+	
+<!-- Mirrored from jetstreamradio.com/?content=userarea by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 02:52:49 GMT -->
+<head>
+    <title>JetStream Radio</title>		
+		<link href="css/main.css" rel="stylesheet" type="text/css" />
+		<script type="text/javascript" src="../code.jquery.com/jquery-latest.js"></script>
+		<script type="text/javascript" src="../code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+        <link rel="icon" type="image/icon" href="images/favicon.ico">
+        <meta name="description" content="JetStream Radio is an online radio station created by and for the aviation community.">
+        <meta name="keywords" content="radio, internet radio, aviation, virtual aviation, free music, live music, live radio, online radio, flight sim, fsx radio, fs radio, fsx, fs2004, tfdi, flight unlimited, smartcars2">
+     	<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','../www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-63747013-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+<script src='../www.google.com/recaptcha/api.js'></script>		<script>
+			var player = new Audio();			
+			var volume = .25;			
+			player.src = 'http://cabhs30.sonixcast.com:20008/stream';		
+			//player.src = 'http://thassos.cdnstream.com:5180/stream';
+			player.volume = volume;			
+						player.preload = "none";
+						var curr_news = 0;
+			var max_news = 0;
+			
+			function get_curr_song() {
+				$.ajax({
+					url:"/radioapi.php?requester=web",
+					type:'GET',
+					success:function(json) {
+						if(json != "")
+							$('#nowplaying').html(" On Air: " + json);
+					}     
+				});
+				$.ajax({
+					url:"/buttoncontrols.php",
+					type:"GET",
+					success:function(json) {
+						if(json != "") {
+							if(json == "SONGREQUEST") {
+								document.getElementById('autodjformbutton').style.display = 'none';
+								document.getElementById('songrequestbutton').style.display = 'block';								
+							}
+							else if(json == "HIDE"){
+								document.getElementById('autodjformbutton').style.display = 'none';
+								document.getElementById('songrequestbutton').style.display = 'none';	
+							}
+							else {
+								document.getElementById('autodjformbutton').style.display = 'block';
+								document.getElementById('songrequestbutton').style.display = 'none';
+							}
+						}
+					}
+				});
+			}
+			
+			window.setInterval(function() {
+				get_curr_song();
+			}, 15000);
+			get_curr_song();
+			
+						$(document).delegate('#newsitem_ball_0',"click",
+				function() {
+					if(curr_news == 0)
+						return;
+										$('#news_item_0').css({"display" : "none"});
+										curr_news = 0;
+					$('#news_item_0').fadeIn(500);
+				}
+			);
+						 
+			 			
+			function go_to_autodj_form() {
+				window.location='index6339.html?content=autodjsongform';
+			}
+			
+			$(function() {
+			 	   var toptab_pos = 0;
+				   var popup_state = 0;
+			 	    var listenmode = 0;
+					
+				   	$('.menuitem').mouseenter(
+					function() {
+						$(this).stop(true, false).animate({
+							'background-color': '#1362D8',
+							'color' : '#ffffff'
+						},100);
+					}
+					);
+					
+					document.getElementById('volumecontrol').addEventListener('input',function(ev) {
+						volume = ($('#volumecontrol').val() / 100);
+						if(listenmode == 1)
+							player.volume = volume;
+						$.ajax({
+							url:"/function/session.php?volume=" + volume,
+							type:'GET'
+						});
+					},false);
+					
+					$('.menuitem').mouseleave(
+					function() {
+						$(this).stop(true, false).animate({
+							'background-color' : '#a2a2a2',
+							'color' : '#ffffff'
+						},250);
+					}
+					);
+					
+					$('.menuitem').mousedown(
+					function() {
+						$(this).stop(true, false).animate({
+							'background-color' : '#0F4CA8',
+							'color' : '#ffffff'
+						},50);
+					}
+					);
+					
+					$('.menuitem').mouseup(
+					function() {
+						$(this).stop(true, false).animate({
+							'background-color': '#1362D8'						
+						},50);
+					}
+					);
+					
+					$('#loginpulldowntab').mouseenter(
+					function() {
+						$(this).stop(true, false).animate({
+							'background-color': '#0055bf'
+						},250);
+					}
+					);
+					
+					$('#loginpulldowntab').mouseleave(
+					function() {
+						$(this).stop(true, false).animate({
+							'background-color' : '#a2a2a2'
+						},250);
+					}
+					);
+					
+					$('#loginpulldowntab').mousedown(
+					function() {
+						$(this).stop(true, false).animate({
+							'background-color' : '#0c49a3',
+							'color' : '#ffffff'
+						},50);
+					}
+					);
+					
+					$('#loginpulldowntab').mouseup(
+					function() {
+						$(this).stop(true, false).animate({
+							'background-color': '#0055bf'						
+						},50);
+					}
+					);
+					
+					$('#loginpulldowntab').click(
+					function() {
+						if(toptab_pos == 0) {
+							$('#topmaster').animate({
+								'top': '70px'								
+							}, 250);
+							toptab_pos = 1;
+						}
+						else {
+							$('#topmaster').animate({
+								'top': '0'
+							}, 250);
+							toptab_pos = 0;
+						}
+						$.ajax({
+							url:"/function/session.php?pulldown=" + toptab_pos,
+							type:'GET'
+						});
+						return false;
+					}
+					);
+					
+					$('#homebutton').click(
+					function() {
+												$('#meetdjtab').css({
+							'display': 'none'
+						});
+						$('#onairtab').css({
+							'display': 'none'
+						});
+						$('#feedbacktab').css({
+							'display': 'none'
+						});
+						$('#hometab').fadeIn(250);		
+						history.pushState('', 'JetStream Radio', 'index.html');											
+												return false;
+					}
+					);
+					
+					$('#feedbackbutton').click(
+					function() {
+												$('#onairtab').css({
+							'display': 'none'
+						});
+						$('#hometab').css({
+							'display': 'none'
+						});	
+						$('#meetdjtab').css({
+							'display': 'none'
+						});	
+						$('#feedbacktab').fadeIn(250);		
+						history.pushState('', 'JetStream Radio - Feedback', '?page=feedback');
+												return false;
+					}
+					);
+					
+					$('#meetdjbutton').click(
+					function() {
+												$('#onairtab').css({
+							'display': 'none'
+						});
+						$('#hometab').css({
+							'display': 'none'
+						});	
+						$('#feedbacktab').css({
+							'display': 'none'
+						});
+						$('#meetdjtab').fadeIn(250);		
+						history.pushState('', 'JetStream Radio - Meet the DJ\'s', '?page=meetdj');
+												return false;
+					}
+					);
+					
+					//
+					
+					$('#onairbutton').click(
+					function() {
+												$('#meetdjtab').css({
+							'display': 'none'
+						});
+						$('#hometab').css({
+							'display': 'none'
+						});	
+						$('#feedbacktab').css({
+							'display': 'none'
+						});
+						$('#onairtab').fadeIn(250);		
+						history.pushState('', 'JetStream Radio - On Air Schedule', '?page=onair');
+								
+						return false;
+					}
+					);
+					
+			
+			   		$(document).delegate('.button',"mouseenter",
+					function() {
+						$(this).stop(true, false).animate({
+							'background-color': '#1362D8'
+						},100);
+					}
+					);
+				
+					
+					$(document).delegate('.button',"mouseleave",
+					function() {
+						$(this).stop(true, false).animate({
+							'background-color' : '#0055bf'
+						},100);
+					}
+					);
+					
+					$(document).delegate('.button',"mousedown",
+					function() {
+						$(this).stop(true, false).animate({
+							'background-color' : '#0F4CA8'
+						},50);
+					}
+					);
+					
+					$(document).delegate('.button',"mouseup",
+					function() {
+						$(this).stop(true, false).animate({
+							'background-color': '#1362D8'						
+						},50);
+					}
+					);								
+			
+					$(document).delegate('.button_blue',"mouseenter",
+					function() {
+						$(this).stop(true, false).animate({
+							'background-color': '#e0e0e0'
+						},100);
+					}
+					);
+				
+					
+					$(document).delegate('.button_blue',"mouseleave",
+					function() {
+						$(this).stop(true, false).animate({
+							'background-color' : '#c8c8c8'
+						},100);
+					}
+					);
+					
+					$(document).delegate('.button_blue',"mousedown",
+					function() {
+						$(this).stop(true, false).animate({
+							'background-color' : '#adadad'
+						},50);
+					}
+					);
+					
+					$(document).delegate('.button_blue',"mouseup",
+					function() {
+						$(this).stop(true, false).animate({
+							'background-color': '#e0e0e0'						
+						},50);
+					}
+					);		
+					
+					
+					$(document).delegate('.dj',"mouseenter",
+					function() {
+						$(this).animate({
+							'background-color': '#e0e0e0'
+						},{duration: 100, queue: false});
+					}
+					);
+				
+					
+					$(document).delegate('.dj',"mouseleave",
+					function() {
+						$(this).animate({
+							'background-color' : '#c8c8c8'
+						},{duration: 100, queue: false});
+					}
+					);
+					
+					$(document).delegate('.dj',"mousedown",
+					function() {
+						$(this).animate({
+							'background-color' : '#adadad'
+						},{duration: 50, queue: false});
+					}
+					);
+					
+					$(document).delegate('.dj',"mouseup",
+					function() {
+						$(this).animate({
+							'background-color': '#e0e0e0'						
+						},{duration: 50, queue: false});
+					}
+					);						
+					
+					function sendsong(e) {
+						e.preventDefault();
+						$.ajax({
+							type: 'POST',
+							cache: false,
+							url: 'function/songrequest.php?action=submit',
+							data: 'id=songrequestform&' + $('#songrequestform').serialize(),
+							success: function(msg) {
+								if(msg == "success") {
+									mkpopup("Success","Your song request was successfully sent! Please check the on-air schedule for a live DJ to make sure your request gets played.",210,160, true, 6500);
+								}
+								else if(msg == "blank") {
+									mkpopup("Missing Info","Please fill out all fields.",210,70, true, 2000);
+								}
+							}
+						});
+					}
+					
+					$(document).delegate('#submitsongrequest',"click", function(e) {						
+						sendsong(e);
+						return false;
+					});
+					
+					$(document).delegate('#songrequestform',"submit", function(e) {												
+						sendsong(e);
+						return false;
+					});
+					
+					
+					$(document).delegate('.newsitem_ball',"mouseenter",
+					function() {
+						$(this).stop(true, false).animate({
+							'background-color': '#e0e0e0'
+						},100);
+					}
+					);
+				
+					
+					$(document).delegate('.newsitem_ball',"mouseleave",
+					function() {
+						$(this).stop(true, false).animate({
+							'background-color' : '#c8c8c8'
+						},100);
+					}
+					);
+					
+					$(document).delegate('.newsitem_ball',"mousedown",
+					function() {
+						$(this).stop(true, false).animate({
+							'background-color' : '#adadad'
+						},50);
+					}
+					);
+					
+										$('#djondemand45button').click(function() {
+												$('#djondemand39').css({"display" : "none"});
+												$('#djondemand38').css({"display" : "none"});
+												$('#djondemand41').css({"display" : "none"});
+												$('#djondemand33').css({"display" : "none"});
+												$('#djondemand46').css({"display" : "none"});
+												$('#djondemand35').css({"display" : "none"});
+												$('#djondemand34').css({"display" : "none"});
+												$('#djondemand29').css({"display" : "none"});
+												$('#djondemand30').css({"display" : "none"});
+												$('#djondemand31').css({"display" : "none"});
+												$('#djondemand36').css({"display" : "none"});
+												$('#djondemand32').css({"display" : "none"});
+												$('#djondemand28').css({"display" : "none"});
+												$('#djondemand26').css({"display" : "none"});
+												$('#djondemand27').css({"display" : "none"});
+												$('#djondemand40').css({"display" : "none"});
+												$('#djondemand42').css({"display" : "none"});
+												$('#djondemand43').css({"display" : "none"});
+												$('#djondemand44').css({"display" : "none"});
+												$('#djondemand47').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from Ethan Browning");
+						$('#djondemand45').fadeIn(250);
+					});
+										$('#djondemand39button').click(function() {
+												$('#djondemand45').css({"display" : "none"});
+												$('#djondemand38').css({"display" : "none"});
+												$('#djondemand41').css({"display" : "none"});
+												$('#djondemand33').css({"display" : "none"});
+												$('#djondemand46').css({"display" : "none"});
+												$('#djondemand35').css({"display" : "none"});
+												$('#djondemand34').css({"display" : "none"});
+												$('#djondemand29').css({"display" : "none"});
+												$('#djondemand30').css({"display" : "none"});
+												$('#djondemand31').css({"display" : "none"});
+												$('#djondemand36').css({"display" : "none"});
+												$('#djondemand32').css({"display" : "none"});
+												$('#djondemand28').css({"display" : "none"});
+												$('#djondemand26').css({"display" : "none"});
+												$('#djondemand27').css({"display" : "none"});
+												$('#djondemand40').css({"display" : "none"});
+												$('#djondemand42').css({"display" : "none"});
+												$('#djondemand43').css({"display" : "none"});
+												$('#djondemand44').css({"display" : "none"});
+												$('#djondemand47').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from Ron ");
+						$('#djondemand39').fadeIn(250);
+					});
+										$('#djondemand38button').click(function() {
+												$('#djondemand45').css({"display" : "none"});
+												$('#djondemand39').css({"display" : "none"});
+												$('#djondemand41').css({"display" : "none"});
+												$('#djondemand33').css({"display" : "none"});
+												$('#djondemand46').css({"display" : "none"});
+												$('#djondemand35').css({"display" : "none"});
+												$('#djondemand34').css({"display" : "none"});
+												$('#djondemand29').css({"display" : "none"});
+												$('#djondemand30').css({"display" : "none"});
+												$('#djondemand31').css({"display" : "none"});
+												$('#djondemand36').css({"display" : "none"});
+												$('#djondemand32').css({"display" : "none"});
+												$('#djondemand28').css({"display" : "none"});
+												$('#djondemand26').css({"display" : "none"});
+												$('#djondemand27').css({"display" : "none"});
+												$('#djondemand40').css({"display" : "none"});
+												$('#djondemand42').css({"display" : "none"});
+												$('#djondemand43').css({"display" : "none"});
+												$('#djondemand44').css({"display" : "none"});
+												$('#djondemand47').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from Simon ");
+						$('#djondemand38').fadeIn(250);
+					});
+										$('#djondemand41button').click(function() {
+												$('#djondemand45').css({"display" : "none"});
+												$('#djondemand39').css({"display" : "none"});
+												$('#djondemand38').css({"display" : "none"});
+												$('#djondemand33').css({"display" : "none"});
+												$('#djondemand46').css({"display" : "none"});
+												$('#djondemand35').css({"display" : "none"});
+												$('#djondemand34').css({"display" : "none"});
+												$('#djondemand29').css({"display" : "none"});
+												$('#djondemand30').css({"display" : "none"});
+												$('#djondemand31').css({"display" : "none"});
+												$('#djondemand36').css({"display" : "none"});
+												$('#djondemand32').css({"display" : "none"});
+												$('#djondemand28').css({"display" : "none"});
+												$('#djondemand26').css({"display" : "none"});
+												$('#djondemand27').css({"display" : "none"});
+												$('#djondemand40').css({"display" : "none"});
+												$('#djondemand42').css({"display" : "none"});
+												$('#djondemand43').css({"display" : "none"});
+												$('#djondemand44').css({"display" : "none"});
+												$('#djondemand47').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from Breanna");
+						$('#djondemand41').fadeIn(250);
+					});
+										$('#djondemand33button').click(function() {
+												$('#djondemand45').css({"display" : "none"});
+												$('#djondemand39').css({"display" : "none"});
+												$('#djondemand38').css({"display" : "none"});
+												$('#djondemand41').css({"display" : "none"});
+												$('#djondemand46').css({"display" : "none"});
+												$('#djondemand35').css({"display" : "none"});
+												$('#djondemand34').css({"display" : "none"});
+												$('#djondemand29').css({"display" : "none"});
+												$('#djondemand30').css({"display" : "none"});
+												$('#djondemand31').css({"display" : "none"});
+												$('#djondemand36').css({"display" : "none"});
+												$('#djondemand32').css({"display" : "none"});
+												$('#djondemand28').css({"display" : "none"});
+												$('#djondemand26').css({"display" : "none"});
+												$('#djondemand27').css({"display" : "none"});
+												$('#djondemand40').css({"display" : "none"});
+												$('#djondemand42').css({"display" : "none"});
+												$('#djondemand43').css({"display" : "none"});
+												$('#djondemand44').css({"display" : "none"});
+												$('#djondemand47').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from Gio");
+						$('#djondemand33').fadeIn(250);
+					});
+										$('#djondemand46button').click(function() {
+												$('#djondemand45').css({"display" : "none"});
+												$('#djondemand39').css({"display" : "none"});
+												$('#djondemand38').css({"display" : "none"});
+												$('#djondemand41').css({"display" : "none"});
+												$('#djondemand33').css({"display" : "none"});
+												$('#djondemand35').css({"display" : "none"});
+												$('#djondemand34').css({"display" : "none"});
+												$('#djondemand29').css({"display" : "none"});
+												$('#djondemand30').css({"display" : "none"});
+												$('#djondemand31').css({"display" : "none"});
+												$('#djondemand36').css({"display" : "none"});
+												$('#djondemand32').css({"display" : "none"});
+												$('#djondemand28').css({"display" : "none"});
+												$('#djondemand26').css({"display" : "none"});
+												$('#djondemand27').css({"display" : "none"});
+												$('#djondemand40').css({"display" : "none"});
+												$('#djondemand42').css({"display" : "none"});
+												$('#djondemand43').css({"display" : "none"});
+												$('#djondemand44').css({"display" : "none"});
+												$('#djondemand47').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from Kevin G");
+						$('#djondemand46').fadeIn(250);
+					});
+										$('#djondemand35button').click(function() {
+												$('#djondemand45').css({"display" : "none"});
+												$('#djondemand39').css({"display" : "none"});
+												$('#djondemand38').css({"display" : "none"});
+												$('#djondemand41').css({"display" : "none"});
+												$('#djondemand33').css({"display" : "none"});
+												$('#djondemand46').css({"display" : "none"});
+												$('#djondemand34').css({"display" : "none"});
+												$('#djondemand29').css({"display" : "none"});
+												$('#djondemand30').css({"display" : "none"});
+												$('#djondemand31').css({"display" : "none"});
+												$('#djondemand36').css({"display" : "none"});
+												$('#djondemand32').css({"display" : "none"});
+												$('#djondemand28').css({"display" : "none"});
+												$('#djondemand26').css({"display" : "none"});
+												$('#djondemand27').css({"display" : "none"});
+												$('#djondemand40').css({"display" : "none"});
+												$('#djondemand42').css({"display" : "none"});
+												$('#djondemand43').css({"display" : "none"});
+												$('#djondemand44').css({"display" : "none"});
+												$('#djondemand47').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from Bailey");
+						$('#djondemand35').fadeIn(250);
+					});
+										$('#djondemand34button').click(function() {
+												$('#djondemand45').css({"display" : "none"});
+												$('#djondemand39').css({"display" : "none"});
+												$('#djondemand38').css({"display" : "none"});
+												$('#djondemand41').css({"display" : "none"});
+												$('#djondemand33').css({"display" : "none"});
+												$('#djondemand46').css({"display" : "none"});
+												$('#djondemand35').css({"display" : "none"});
+												$('#djondemand29').css({"display" : "none"});
+												$('#djondemand30').css({"display" : "none"});
+												$('#djondemand31').css({"display" : "none"});
+												$('#djondemand36').css({"display" : "none"});
+												$('#djondemand32').css({"display" : "none"});
+												$('#djondemand28').css({"display" : "none"});
+												$('#djondemand26').css({"display" : "none"});
+												$('#djondemand27').css({"display" : "none"});
+												$('#djondemand40').css({"display" : "none"});
+												$('#djondemand42').css({"display" : "none"});
+												$('#djondemand43').css({"display" : "none"});
+												$('#djondemand44').css({"display" : "none"});
+												$('#djondemand47').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from Brandon");
+						$('#djondemand34').fadeIn(250);
+					});
+										$('#djondemand29button').click(function() {
+												$('#djondemand45').css({"display" : "none"});
+												$('#djondemand39').css({"display" : "none"});
+												$('#djondemand38').css({"display" : "none"});
+												$('#djondemand41').css({"display" : "none"});
+												$('#djondemand33').css({"display" : "none"});
+												$('#djondemand46').css({"display" : "none"});
+												$('#djondemand35').css({"display" : "none"});
+												$('#djondemand34').css({"display" : "none"});
+												$('#djondemand30').css({"display" : "none"});
+												$('#djondemand31').css({"display" : "none"});
+												$('#djondemand36').css({"display" : "none"});
+												$('#djondemand32').css({"display" : "none"});
+												$('#djondemand28').css({"display" : "none"});
+												$('#djondemand26').css({"display" : "none"});
+												$('#djondemand27').css({"display" : "none"});
+												$('#djondemand40').css({"display" : "none"});
+												$('#djondemand42').css({"display" : "none"});
+												$('#djondemand43').css({"display" : "none"});
+												$('#djondemand44').css({"display" : "none"});
+												$('#djondemand47').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from Shaun");
+						$('#djondemand29').fadeIn(250);
+					});
+										$('#djondemand30button').click(function() {
+												$('#djondemand45').css({"display" : "none"});
+												$('#djondemand39').css({"display" : "none"});
+												$('#djondemand38').css({"display" : "none"});
+												$('#djondemand41').css({"display" : "none"});
+												$('#djondemand33').css({"display" : "none"});
+												$('#djondemand46').css({"display" : "none"});
+												$('#djondemand35').css({"display" : "none"});
+												$('#djondemand34').css({"display" : "none"});
+												$('#djondemand29').css({"display" : "none"});
+												$('#djondemand31').css({"display" : "none"});
+												$('#djondemand36').css({"display" : "none"});
+												$('#djondemand32').css({"display" : "none"});
+												$('#djondemand28').css({"display" : "none"});
+												$('#djondemand26').css({"display" : "none"});
+												$('#djondemand27').css({"display" : "none"});
+												$('#djondemand40').css({"display" : "none"});
+												$('#djondemand42').css({"display" : "none"});
+												$('#djondemand43').css({"display" : "none"});
+												$('#djondemand44').css({"display" : "none"});
+												$('#djondemand47').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from David");
+						$('#djondemand30').fadeIn(250);
+					});
+										$('#djondemand31button').click(function() {
+												$('#djondemand45').css({"display" : "none"});
+												$('#djondemand39').css({"display" : "none"});
+												$('#djondemand38').css({"display" : "none"});
+												$('#djondemand41').css({"display" : "none"});
+												$('#djondemand33').css({"display" : "none"});
+												$('#djondemand46').css({"display" : "none"});
+												$('#djondemand35').css({"display" : "none"});
+												$('#djondemand34').css({"display" : "none"});
+												$('#djondemand29').css({"display" : "none"});
+												$('#djondemand30').css({"display" : "none"});
+												$('#djondemand36').css({"display" : "none"});
+												$('#djondemand32').css({"display" : "none"});
+												$('#djondemand28').css({"display" : "none"});
+												$('#djondemand26').css({"display" : "none"});
+												$('#djondemand27').css({"display" : "none"});
+												$('#djondemand40').css({"display" : "none"});
+												$('#djondemand42').css({"display" : "none"});
+												$('#djondemand43').css({"display" : "none"});
+												$('#djondemand44').css({"display" : "none"});
+												$('#djondemand47').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from Collin");
+						$('#djondemand31').fadeIn(250);
+					});
+										$('#djondemand36button').click(function() {
+												$('#djondemand45').css({"display" : "none"});
+												$('#djondemand39').css({"display" : "none"});
+												$('#djondemand38').css({"display" : "none"});
+												$('#djondemand41').css({"display" : "none"});
+												$('#djondemand33').css({"display" : "none"});
+												$('#djondemand46').css({"display" : "none"});
+												$('#djondemand35').css({"display" : "none"});
+												$('#djondemand34').css({"display" : "none"});
+												$('#djondemand29').css({"display" : "none"});
+												$('#djondemand30').css({"display" : "none"});
+												$('#djondemand31').css({"display" : "none"});
+												$('#djondemand32').css({"display" : "none"});
+												$('#djondemand28').css({"display" : "none"});
+												$('#djondemand26').css({"display" : "none"});
+												$('#djondemand27').css({"display" : "none"});
+												$('#djondemand40').css({"display" : "none"});
+												$('#djondemand42').css({"display" : "none"});
+												$('#djondemand43').css({"display" : "none"});
+												$('#djondemand44').css({"display" : "none"});
+												$('#djondemand47').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from Connor");
+						$('#djondemand36').fadeIn(250);
+					});
+										$('#djondemand32button').click(function() {
+												$('#djondemand45').css({"display" : "none"});
+												$('#djondemand39').css({"display" : "none"});
+												$('#djondemand38').css({"display" : "none"});
+												$('#djondemand41').css({"display" : "none"});
+												$('#djondemand33').css({"display" : "none"});
+												$('#djondemand46').css({"display" : "none"});
+												$('#djondemand35').css({"display" : "none"});
+												$('#djondemand34').css({"display" : "none"});
+												$('#djondemand29').css({"display" : "none"});
+												$('#djondemand30').css({"display" : "none"});
+												$('#djondemand31').css({"display" : "none"});
+												$('#djondemand36').css({"display" : "none"});
+												$('#djondemand28').css({"display" : "none"});
+												$('#djondemand26').css({"display" : "none"});
+												$('#djondemand27').css({"display" : "none"});
+												$('#djondemand40').css({"display" : "none"});
+												$('#djondemand42').css({"display" : "none"});
+												$('#djondemand43').css({"display" : "none"});
+												$('#djondemand44').css({"display" : "none"});
+												$('#djondemand47').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from RichieD");
+						$('#djondemand32').fadeIn(250);
+					});
+										$('#djondemand28button').click(function() {
+												$('#djondemand45').css({"display" : "none"});
+												$('#djondemand39').css({"display" : "none"});
+												$('#djondemand38').css({"display" : "none"});
+												$('#djondemand41').css({"display" : "none"});
+												$('#djondemand33').css({"display" : "none"});
+												$('#djondemand46').css({"display" : "none"});
+												$('#djondemand35').css({"display" : "none"});
+												$('#djondemand34').css({"display" : "none"});
+												$('#djondemand29').css({"display" : "none"});
+												$('#djondemand30').css({"display" : "none"});
+												$('#djondemand31').css({"display" : "none"});
+												$('#djondemand36').css({"display" : "none"});
+												$('#djondemand32').css({"display" : "none"});
+												$('#djondemand26').css({"display" : "none"});
+												$('#djondemand27').css({"display" : "none"});
+												$('#djondemand40').css({"display" : "none"});
+												$('#djondemand42').css({"display" : "none"});
+												$('#djondemand43').css({"display" : "none"});
+												$('#djondemand44').css({"display" : "none"});
+												$('#djondemand47').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from Eric");
+						$('#djondemand28').fadeIn(250);
+					});
+										$('#djondemand26button').click(function() {
+												$('#djondemand45').css({"display" : "none"});
+												$('#djondemand39').css({"display" : "none"});
+												$('#djondemand38').css({"display" : "none"});
+												$('#djondemand41').css({"display" : "none"});
+												$('#djondemand33').css({"display" : "none"});
+												$('#djondemand46').css({"display" : "none"});
+												$('#djondemand35').css({"display" : "none"});
+												$('#djondemand34').css({"display" : "none"});
+												$('#djondemand29').css({"display" : "none"});
+												$('#djondemand30').css({"display" : "none"});
+												$('#djondemand31').css({"display" : "none"});
+												$('#djondemand36').css({"display" : "none"});
+												$('#djondemand32').css({"display" : "none"});
+												$('#djondemand28').css({"display" : "none"});
+												$('#djondemand27').css({"display" : "none"});
+												$('#djondemand40').css({"display" : "none"});
+												$('#djondemand42').css({"display" : "none"});
+												$('#djondemand43').css({"display" : "none"});
+												$('#djondemand44').css({"display" : "none"});
+												$('#djondemand47').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from Bradley");
+						$('#djondemand26').fadeIn(250);
+					});
+										$('#djondemand27button').click(function() {
+												$('#djondemand45').css({"display" : "none"});
+												$('#djondemand39').css({"display" : "none"});
+												$('#djondemand38').css({"display" : "none"});
+												$('#djondemand41').css({"display" : "none"});
+												$('#djondemand33').css({"display" : "none"});
+												$('#djondemand46').css({"display" : "none"});
+												$('#djondemand35').css({"display" : "none"});
+												$('#djondemand34').css({"display" : "none"});
+												$('#djondemand29').css({"display" : "none"});
+												$('#djondemand30').css({"display" : "none"});
+												$('#djondemand31').css({"display" : "none"});
+												$('#djondemand36').css({"display" : "none"});
+												$('#djondemand32').css({"display" : "none"});
+												$('#djondemand28').css({"display" : "none"});
+												$('#djondemand26').css({"display" : "none"});
+												$('#djondemand40').css({"display" : "none"});
+												$('#djondemand42').css({"display" : "none"});
+												$('#djondemand43').css({"display" : "none"});
+												$('#djondemand44').css({"display" : "none"});
+												$('#djondemand47').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from Joshua");
+						$('#djondemand27').fadeIn(250);
+					});
+										$('#djondemand40button').click(function() {
+												$('#djondemand45').css({"display" : "none"});
+												$('#djondemand39').css({"display" : "none"});
+												$('#djondemand38').css({"display" : "none"});
+												$('#djondemand41').css({"display" : "none"});
+												$('#djondemand33').css({"display" : "none"});
+												$('#djondemand46').css({"display" : "none"});
+												$('#djondemand35').css({"display" : "none"});
+												$('#djondemand34').css({"display" : "none"});
+												$('#djondemand29').css({"display" : "none"});
+												$('#djondemand30').css({"display" : "none"});
+												$('#djondemand31').css({"display" : "none"});
+												$('#djondemand36').css({"display" : "none"});
+												$('#djondemand32').css({"display" : "none"});
+												$('#djondemand28').css({"display" : "none"});
+												$('#djondemand26').css({"display" : "none"});
+												$('#djondemand27').css({"display" : "none"});
+												$('#djondemand42').css({"display" : "none"});
+												$('#djondemand43').css({"display" : "none"});
+												$('#djondemand44').css({"display" : "none"});
+												$('#djondemand47').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from Marc ");
+						$('#djondemand40').fadeIn(250);
+					});
+										$('#djondemand42button').click(function() {
+												$('#djondemand45').css({"display" : "none"});
+												$('#djondemand39').css({"display" : "none"});
+												$('#djondemand38').css({"display" : "none"});
+												$('#djondemand41').css({"display" : "none"});
+												$('#djondemand33').css({"display" : "none"});
+												$('#djondemand46').css({"display" : "none"});
+												$('#djondemand35').css({"display" : "none"});
+												$('#djondemand34').css({"display" : "none"});
+												$('#djondemand29').css({"display" : "none"});
+												$('#djondemand30').css({"display" : "none"});
+												$('#djondemand31').css({"display" : "none"});
+												$('#djondemand36').css({"display" : "none"});
+												$('#djondemand32').css({"display" : "none"});
+												$('#djondemand28').css({"display" : "none"});
+												$('#djondemand26').css({"display" : "none"});
+												$('#djondemand27').css({"display" : "none"});
+												$('#djondemand40').css({"display" : "none"});
+												$('#djondemand43').css({"display" : "none"});
+												$('#djondemand44').css({"display" : "none"});
+												$('#djondemand47').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from Jon Griffin");
+						$('#djondemand42').fadeIn(250);
+					});
+										$('#djondemand43button').click(function() {
+												$('#djondemand45').css({"display" : "none"});
+												$('#djondemand39').css({"display" : "none"});
+												$('#djondemand38').css({"display" : "none"});
+												$('#djondemand41').css({"display" : "none"});
+												$('#djondemand33').css({"display" : "none"});
+												$('#djondemand46').css({"display" : "none"});
+												$('#djondemand35').css({"display" : "none"});
+												$('#djondemand34').css({"display" : "none"});
+												$('#djondemand29').css({"display" : "none"});
+												$('#djondemand30').css({"display" : "none"});
+												$('#djondemand31').css({"display" : "none"});
+												$('#djondemand36').css({"display" : "none"});
+												$('#djondemand32').css({"display" : "none"});
+												$('#djondemand28').css({"display" : "none"});
+												$('#djondemand26').css({"display" : "none"});
+												$('#djondemand27').css({"display" : "none"});
+												$('#djondemand40').css({"display" : "none"});
+												$('#djondemand42').css({"display" : "none"});
+												$('#djondemand44').css({"display" : "none"});
+												$('#djondemand47').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from Josh Riley");
+						$('#djondemand43').fadeIn(250);
+					});
+										$('#djondemand44button').click(function() {
+												$('#djondemand45').css({"display" : "none"});
+												$('#djondemand39').css({"display" : "none"});
+												$('#djondemand38').css({"display" : "none"});
+												$('#djondemand41').css({"display" : "none"});
+												$('#djondemand33').css({"display" : "none"});
+												$('#djondemand46').css({"display" : "none"});
+												$('#djondemand35').css({"display" : "none"});
+												$('#djondemand34').css({"display" : "none"});
+												$('#djondemand29').css({"display" : "none"});
+												$('#djondemand30').css({"display" : "none"});
+												$('#djondemand31').css({"display" : "none"});
+												$('#djondemand36').css({"display" : "none"});
+												$('#djondemand32').css({"display" : "none"});
+												$('#djondemand28').css({"display" : "none"});
+												$('#djondemand26').css({"display" : "none"});
+												$('#djondemand27').css({"display" : "none"});
+												$('#djondemand40').css({"display" : "none"});
+												$('#djondemand42').css({"display" : "none"});
+												$('#djondemand43').css({"display" : "none"});
+												$('#djondemand47').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from Vincent Das");
+						$('#djondemand44').fadeIn(250);
+					});
+										$('#djondemand47button').click(function() {
+												$('#djondemand45').css({"display" : "none"});
+												$('#djondemand39').css({"display" : "none"});
+												$('#djondemand38').css({"display" : "none"});
+												$('#djondemand41').css({"display" : "none"});
+												$('#djondemand33').css({"display" : "none"});
+												$('#djondemand46').css({"display" : "none"});
+												$('#djondemand35').css({"display" : "none"});
+												$('#djondemand34').css({"display" : "none"});
+												$('#djondemand29').css({"display" : "none"});
+												$('#djondemand30').css({"display" : "none"});
+												$('#djondemand31').css({"display" : "none"});
+												$('#djondemand36').css({"display" : "none"});
+												$('#djondemand32').css({"display" : "none"});
+												$('#djondemand28').css({"display" : "none"});
+												$('#djondemand26').css({"display" : "none"});
+												$('#djondemand27').css({"display" : "none"});
+												$('#djondemand40').css({"display" : "none"});
+												$('#djondemand42').css({"display" : "none"});
+												$('#djondemand43').css({"display" : "none"});
+												$('#djondemand44').css({"display" : "none"});
+												$('#ondemandcontentheader').html("On-Demand Content from Sachin Goenka");
+						$('#djondemand47').fadeIn(250);
+					});
+										
+					$(document).delegate('.newsitem_ball',"mouseup",
+					function() {
+						$(this).stop(true, false).animate({
+							'background-color': '#e0e0e0'						
+						},50);
+					}
+					);	
+					
+					
+					$('#userareabutton').click(function() {
+						window.location.href = "indexbc82.html?content=userarea";
+					});
+					
+					$('#adminareabutton').click(function() {
+						window.location.href = "index78cc.html?content=adminarea";
+					});
+					
+					$('#djareabutton').click(function() {
+						window.location.href = "index413b.html?content=djarea";
+					});
+					
+					$('#songrequestsbutton').click(function() {
+						window.location.href = "index7e05.html?content=songrequests";
+					});
+					
+					$('#usermanagerbutton').click(function() {
+						window.location.href = "indexd014.html?content=usermanager";
+					});
+			
+					$('#startlistening').click(
+					function() {
+						if(listenmode == 0) {
+							$('#startlistening').html("<img src='images/img_pause.png'/>");						
+							listenmode = 1;
+							player.volume = volume;
+							player.play();
+						}
+						else {
+							$('#startlistening').html("<img src='images/img_play.png'/>");
+							player.volume = 0;
+							listenmode = 0;
+						}
+						$.ajax({
+							url:"/function/session.php?playing=" + listenmode,
+							type:'GET'
+						});
+					}
+					);
+					
+					function hide_onair(whichtoshow) {
+						$('#mondayschedule').css({"display" : "none"});
+						$('#tuesdayschedule').css({"display" : "none"});
+						$('#wednesdayschedule').css({"display" : "none"});
+						$('#thursdayschedule').css({"display" : "none"});
+						$('#fridayschedule').css({"display" : "none"});
+						$('#saturdayschedule').css({"display" : "none"});
+						$('#sundayschedule').css({"display" : "none"});
+						$(whichtoshow).fadeIn(250);
+					}
+					
+					$('#mondaybutton').click(
+					function() {
+						hide_onair('#mondayschedule');
+						$('#whichday').html("Monday's Schedule");
+					}
+					);
+					
+					$('#tuesdaybutton').click(
+					function() {
+						hide_onair('#tuesdayschedule');
+						$('#whichday').html("Tuesday's Schedule");
+					}
+					);
+					
+					$('#wednesdaybutton').click(
+					function() {
+						hide_onair('#wednesdayschedule');
+						$('#whichday').html("Wednesday's Schedule");
+					}
+					);
+					
+					$('#thursdaybutton').click(
+					function() {
+						hide_onair('#thursdayschedule');
+						$('#whichday').html("Thursday's Schedule");
+					}
+					);
+					
+					$('#fridaybutton').click(
+					function() {
+						hide_onair('#fridayschedule');
+						$('#whichday').html("Friday's Schedule");
+					}				
+					);
+					
+					$('#saturdaybutton').click(
+					function() {
+						hide_onair('#saturdayschedule');
+						$('#whichday').html("Saturday's Schedule");
+					}
+					);
+					
+					$('#sundaybutton').click(
+					function() {
+						hide_onair('#sundayschedule');
+						$('#whichday').html("Sunday's Schedule");
+					}
+					);
+					
+					$('#songrequestbutton').click(
+					function() {
+						mkpopup("Request a Song","Please be aware, song requests can only be honored when a scheduled show is taking place.<br/><br/><form action='#' id='songrequestform' name='songrequestform'><input type='text' placeholder='Your Name'  name='name' style='width:200px'/><br/><br/><input type='text' placeholder='Artist Name' name='artistname' style='width:200px'/><br/><br/><input type='text' placeholder='Song Name' name='songname' style='width:200px'/><br/><br/><input type='text' placeholder='Comments' name='comments' style='width:200px'/><br/><br/>Notify me via SMS when my request is about to play. <input type='checkbox' name='notifyviasms' value='yes'/><br/><br/><input type='text' placeholder='Phone Number' name='phonenumber' style='width:200px'/><br/>You don't need to provide a country code for most providers.<br/><br/>Cell Service Provider <select name='smsgateway' style='width:213px'><option value='msg.acsalaska.com'>ACS Alaska</option><option value='message.alltel.com'>Alltel</option><option value='paging.acswireless.com'>Ameritech</option><option value='archwireless.net'>Arch</option><option value='txt.att.net'>AT&T</option><option value='txt.bellmobility.ca'>Bell Canada</option><option value='blueskyfrog.com'>Blue Sky Frog</option><option value='myboostmobile.com'>Boost</option><option value='cwwsms.com'>Carolina West</option><option value='mobile.celloneusa.com'>Cellular One</option><option value='csouth1.com'>Cellular South</option><option value='gocbw.com'>Cincinnati Bell</option><option value='mobile.mycingular.com'>Cingular</option><option value='mmode.com'>Cingular Blue</option><option value='clarotorpedo.com.br'>Claro</option><option value='sms.comviq.se'>Comviq</option><option value='mms.mycricket.com'>Cricket</option><option value='sms.edgewireless.com'>Edge</option><option value='einsteinsms.com'>Einstein PCS</option><option value='fido.ca'>Fido</option><option value='immixmail.com'>Immix</option><option value='mymetropcs.com'>Metro PCS</option><option value='m1.com.sg'>Mobile One</option><option value='sms.co.za'>MTN Africa</option><option value='messaging.nextel.com'>Nextel</option><option value='pcs.ntelos.com'>Ntelos</option><option value='optusmobile.com.html'>Optus</option><option value='orange.net'>Orange</option><option value='orange.html'>Orange Poland</option><option value='text.plusgsm.html'>Plus Poland</option><option value='qwestmp.com'>Qwest</option><option value='pcs.rogers.com'>Rogers</option><option value='pcs.sasktelmobility.com'>Sasktel</option><option value='mysmart.mymobile.ph'>Smart</option><option value='mysmart.mymobile.ph'>Smart Telecom</option><option value='page.southernlinc.com'>Southern Linc</option><option value='messaging.sprintpcs.com'>Sprint</option><option value='tms.suncom.com'>SunCom</option><option value='mobile.surewest.com'>Sure West</option><option value='bluewin.ch'>SwissCom</option><option value='tmomail.net'>T-Mobile</option><option value='T-D1-SMS.de'>T-Mobile (German)</option><option value='t-mobile.uk.net'>T-Mobile UK</option><option value='tbayteltxt.net'>TBayTel</option><option value='mobilpost.no'>Telenor</option><option value='msg.telus.com'>Telus</option><option value='timnet.com'>Tim</option><option value='utext.com'>Unicel</option><option value='vmobile.ca'>V Mobile CA</option><option value='vtext.com'>Verizon</option><option value='vmobl.com'>Virgin Mobile</option><option value='voda.co.za'>Vodacom Africa</option><option value='vodafone.net'>Vodafone</option><option value='sms.vodafone.it'>Vodafone Italy</option><option value='sms.welcome2well.com'>WellCom</option></select><br/><br/><div id='test' class='button_blue songrequestcancel' style='float:left'>Cancel</div><div id='submitsongrequest' class='button_blue songrequestsend' style='float:right'>Send</div><input type='submit' style='position: absolute; left: -9999px; width: 1px; height: 1px;'/></form>",210,665,false, 0);
+					}
+					);
+					
+					$('.dj_biopage').click(
+					function() {
+						if($(this).height() == 235) {							
+							$(this).animate({								
+								"height" : (($(document.getElementById(this.id + 'bio')).height() + 250) + "px")
+							}, {duration: 100, queue: false});
+							
+							
+						}
+						else {
+							$(this).animate({
+								"height" : "235px"
+							}, {duration: 100, queue: false});
+						}
+					}
+					);
+					
+					
+					
+					$(document).delegate('.songrequestcancel',"click",
+					function() {
+						rmpopup();
+					}
+					);
+			
+					$('#signoutbutton').click(
+					function() {						
+						window.location.href = 'index.html?action=logout';
+					}				
+					);
+					
+					function mkpopup(title, content, width, height, autofadeout, autofadeouttime) {		
+						if(popup_state == 1)
+							rmpopup();			
+						popup_state = 1;
+						$('#overlaypopup').html("<h1>" + title + "</h1>" + content);
+						$('#overlaypopup').attr("style", "height:" + height + "px;width:" + width + "px");
+						$('#overlaydiv').stop(true, false).fadeIn(250);
+						$('#overlaypopup').stop(true, false).fadeIn(250);
+						if(autofadeout == true) {
+							$('#overlaypopup').stop(true, false).delay(autofadeouttime).fadeOut(250);
+							$('#overlaydiv').stop(true, false).delay(autofadeouttime).fadeOut(250);
+							popup_state = 0;
+						}
+					}
+					
+					function rmpopup() {
+						popup_state = 0;
+						$('#overlaypopup').stop(true, false).fadeOut(250);
+						$('#overlaydiv').stop(true, false).fadeOut(250);
+					}	
+					
+				});
+		</script>        
+	</head>
+    <body>
+    <div style='position:absolute;display:block;background:URL("images/img_header_lines.png");background-repeat:repeat-x;top:248px;width:100%;height:31px;left:0;'></div>
+	<div id="overlaydiv" class="overlay">
+	</div>
+	<div id="overlaypopup" class="overlay_popup"></div>	
+            <div class="header">
+                <div class="headerbox">
+                    <a href="index.html"><img alt="logo" src="images/site_logo.png" style="padding-top:38px;padding-left:0"/></a>
+                </div>                                
+            </div>            
+            <div class="menu" style="clear:both">
+	            <div class="sitebox">
+	            	<a href='index.html'><div class="menuitem" id='homebutton'>HOME</div></a>
+                    <a href='index7f62.html?content=feedback'><div class="menuitem" id='feedbackbutton'>FEEDBACK</div></a>
+                    <div class="menuitem" id='onairbutton'>ON-AIR SCHEDULE</div>
+                    <div class="menuitem" id='meetdjbutton'>MEET THE DJ'S</div>
+                </div>
+            </div>            
+            <div class="barnowplaying" style="clear:both;">
+            	<div class="sitebox">
+                    <div class="button" style="margin-top:-6px;padding:0;height:39px;width:39px" id="startlistening" ><img src='images/img_play.png'/></div>
+                    <div style="display:inline-block;width:851px;position:relative;">
+						<div style='margin-top:-13px;position:absolute;'>                        
+                            <div class='_jsr'><input style='width:146px;' class='volctrl' type="range" value="25" id="volumecontrol"/></div>
+                            <div style="width:550px;" class='div_now_playing' id="nowplaying"></div>
+	                    </div>
+	                </div>
+                    <div id="autodjformbutton" class="button" onClick="go_to_autodj_form();" style='display:none;height:22px;padding-top:11px;padding-bottom:5px;margin:0;float:right;margin-top:-25px;color:#FFFFFF;'>
+                    AutoDJ Song Form
+                    </div>
+                    <div id="songrequestbutton" class="button" style='height:22px;padding-top:11px;padding-bottom:5px;margin:0;float:right;margin-top:-25px;color:#FFFFFF;display:none'>
+                    Request a Song
+                    </div>
+            </div>
+            </div>
+        
+		<div class="sitebox">
+        			<div id="topmaster" style="background-color:#FFFFFF;position:fixed;width:950px;z-index:999999;top:0">
+				<div id="loginpulldowntab" class="toptab">Staff Sign In</div>
+				<div id="topsignin" class="top_signin" style="top:-70px;height:65px ">
+                					<form id='signinform' action="https://jetstreamradio.com/function/login.php?action=login" method="post">
+						<input type='email' tabindex=1 name="email" placeholder="Email Address" style="float:left;margin-top:2px;margin-left:2px;width:165px"/><input tabindex=2 type='password' name="password" placeholder="Password" style="float:left;margin-top:2px;margin-left:7px;margin-right:7px;width:165px"/>
+						<div class="button" style="float:right;margin-right:3px;margin-top:1px" onClick="document.getElementById('signinform').submit();">Sign In</div>
+                        <div style="clear:both"></div>
+						<input type="submit" tabindex=4 style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
+						<div style="display:inline;float:left;padding:3px"><input tabindex=3 value="rememberme" type='checkbox' name="rememberme"/>Remember Me</div>
+                        <!--<div style="display:inline;float:right;padding:3px"><a href='https://jetstreamradio.com/?content=register'>Register/Lost Password</a></div>-->
+						<div style="color:#FF0000;display:none;float:right;padding:3px">Your credentials were invalid.</div>
+                        
+					</form>
+                				</div>                
+			</div>
+			<div class="mainbox" style="margin-top:27px">
+              					<!-- home -->            
+				<div id="hometab" class="contentbox" style="display:table">	                
+					<img onclick='window.location.href = "https://blog.tfdidesign.com/2015/05/24/jetstream-radio/";' src='uploads/images/1php4cHAj2.png' alt="banner" style=" cursor:pointer;height:240px;width:920px;margin-bottom:10px" />
+                    					<div style="display:block;height:134px;width:621px;background-color:#efefef;position:relative;float:left">                    	
+												<div id="news_item_0" style='background-color:#efefef;box-shadow: inset 0 0 20px 1px #9E9E9E;width:621px;'>
+							<img src='uploads/images/289phpxbPWLN.png' alt='news placeholder' style='height:107px;width:240px;display:inline;'/>                            
+							<div style="position:absolute;top:0;left:240px;padding:12px;padding-top:7px">
+								<div style="color:#0055bf;font-size:14pt;font-family:'Verdana';text-transform:uppercase;margin-bottom:11px">JetStream Radio Desktop</div>
+								<div style="font-size:10pt">Listen to all of your favorite tunes straight from your PC with JetStream Radio Desktop for Windows. <a href="http://tinyurl.com/jsrdesktop">Download Now!</a href></div>
+							</div>
+						</div>
+						 
+						<div style="position:absolute;bottom:0;background-color:#0055bf;color:#ffffff;width:100%;height:27px">
+							<div style="height:27px;width:621px;position:relative;text-align:center">
+                            							</div>
+						</div>
+					</div>
+                                        
+                    <div style="width:282px;float:right;display:inline">
+						<a height="209" width="282" style="margin-top:10px" class="twitter-timeline" href="https://twitter.com/JetStreamRadio"  data-widget-id="451059200970346496">Tweets by @JetStreamRadio</a>                                                        
+						<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>                            
+					</div>
+                    <div style="margin-top:15px;float:left;display:inline">
+                    	<a href='https://www.facebook.com/RadioJetStream' target='_blank'><img src='images/FB_Banner.png' alt="facebook banner"/></a>
+                    </div>
+					
+					<div style="clear:both"></div>
+					<div style="float:left;margin-top:15px;width:100%;margin-bottom:10px">
+						<div style="width:100%;text-align:center;font-size:14pt;color:#0055bf;margin-bottom:10px">On Air Today - Friday, 04/28/17. Time Now: 02:52Z</div>
+						<table>
+							<tr class="onair_header">
+								<td style="width:230px;">Show</td>
+								<td style="width:230px">Show Type</td>
+								<td style="width:230px">Host</td>
+								<td style="width:230px">Time</td>
+							</tr>
+                                                        	<tr>
+                                	<td>Friday Night Live</td>
+                                    <td>Live Show</td>
+                                    <td>Josh Riley</td>
+                                    <td>1700z</td>
+                                </tr>
+                                                        	<tr>
+                                	<td>Ethan's Evening</td>
+                                    <td>Live Show</td>
+                                    <td>Ethan Browning</td>
+                                    <td>1900z</td>
+                                </tr>
+                            							<tr>
+								<td>The Next Generation in Music</td>
+								<td>Music</td>
+								<td>AutoDJ</td>
+								<td>Any Applicable</td>
+							</tr>
+						</table>
+					</div>
+					<br/><br/>
+                    <div style='float:left;width:460px'>
+						<div style="width:100%;text-align:center;font-size:14pt;margin-top:5px;color:#0055bf;margin-bottom:5px;margin-left:auto;margin-right:auto">Talk to us!</div>
+						<iframe src="https://discordapp.com/widget?id=112345724674469888&amp;theme=dark" width="400" height="300" allowtransparency="true" frameborder="0"></iframe>
+					</div>
+                    <div style='float:right;width:460px'>
+	                                        
+		                <div class="contentbox" style="display:inline">
+	                        <div style="width:100%;text-align:center;font-size:14pt;margin-top:5px;color:#0055bf;margin-bottom:5px;margin-left:auto;margin-right:auto">Partners</div>
+	                        <div style='margin-left:auto;margin-right:auto;text-align:center;'>
+ 
+<a href='http://www.tfdidesign.com/' target='_Blank'><img src='../tfdidesign.com/templates/tfdi2/img/logo.html' alt='TFDi Logo' width=100></a>
+  
+
+<a href='http://www.vatstar.com/' target='_blank'><img src='../i.imgur.com/xH0RpOE.png' width=100 alt='VATSTAR'></a>
+ 
+
+<a href='https://www.reddit.com/r/flightsim' target='_blank'><img src='../i.imgur.com/yN3moXn.png' width=100 alt='r flightsim'></a>
+ 
+
+<a href='http://www.sasvirtual.co.uk/' target='_blank'><img src='images/partners/sasvirtual.png' width=100 alt='SAS Virtual' /></a>
+ 
+
+<a href='http://makaiair.com/' target='_blank'><img src='images/partners/makaiair.png' width=100 alt='Makai Air' /></a>
+
+
+<a href="https://vgroupvirtual.com/" target="_blank"><img src="../vgroupvirtual.com/images/partnerlogo.png" width=100  alt="V Group Virtual" /></a>
+
+
+<a href='http://www.aavirtual.net//' target='_blank'><img src='../aavirtual.net/aanewlogotop.gif' width=100  /></a> 
+</div>
+
+
+<div style="text-align: center;">
+<p>For partner inquiries please contact Brandon@jetstreamradio.com</p>
+</div><br />
+	                        <div style="width:100%;text-align:center;font-size:14pt;margin-top:5px;color:#0055bf;margin-bottom:5px;margin-left:auto;margin-right:auto">Brought to you by <a href="http://www.sonixcast.com/">Sonixcast<br /><br /><img src="images/partners/sonixcast.png" /></a ></div>
+	                    </div>
+                    </div>
+                    				</div>         
+                <!-- feedback -->
+   				<div id="feedbacktab" class="contentbox" style="display:none">
+                	<div style="width:100%;text-align:center;font-size:14pt;color:#0055bf;margin-bottom:5px">About</div>
+                    JetStream is a community-powered online radio station. This means we take reviews and input from the community very seriously.
+                    <br/><br/>
+                    <div style="width:100%;text-align:center;font-size:14pt;color:#0055bf;margin-bottom:5px">Reviews</div>
+                  	Via the Review Form, you can submit feedback for any JetStream Radio content (DJ's, live shows, on-demand content, or an "other" category for things like social media, articles, etc.). This feedback goes to our administration team and allows them to improve and decide on future content.<br/><br/>
+                    The Review Form is available at <a href='index855a.html?content=review'>https://jetstreamradio.com/?content=review</a>.
+                    <br/><br/>
+                    <div style="width:100%;text-align:center;font-size:14pt;color:#0055bf;margin-bottom:5px">AutoDJ Song Request Form</div>
+					AutoDJ exists to fill off-times with enjoyable content. Our goal is to maintain a list of active, popular, upbeat songs.
+                    <br/><br/>
+                    We have added a form to allow our listeners to both request a song's addition or removal to the AutoDJ list. If a song is explicit, doesn't fit the radio's style, or is unpleasant, it can be reported via the AutoDJ Song Request form. If a new song comes out, it can be submitted so it gets added to the list.
+                    <br/><br/>
+                    The AutoDJ Song Request Form is available at <a href='index6339.html?content=autodjsongform'>https://jetstreamradio.com/?content=autodjsongform</a>.
+                </div>      
+				<!-- on air -->
+				<div id="onairtab" class="contentbox" style="display:none">
+					<div style="width:100%;text-align:center;font-size:14pt;color:#0055bf;margin-bottom:5px">On Air Schedule</div>
+					<div id="mondaybutton" style="display:inline-block;width:116px;border-bottom-right-radius:0" class="button">Monday</div>
+					<div id="tuesdaybutton" style="display:inline-block;width:115px;" class="button">Tuesday</div>
+					<div id="wednesdaybutton" style="display:inline-block;width:115px;" class="button">Wednesday</div>
+					<div id="thursdaybutton" style="display:inline-block;width:115px;" class="button">Thursday</div>
+					<div id="fridaybutton" style="display:inline-block;width:115px;" class="button">Friday</div>
+					<div id="saturdaybutton" style="display:inline-block;width:116px;" class="button">Saturday</div>
+					<div id="sundaybutton" style="display:inline-block;width:116px" class="button">Sunday</div>
+					<div style="float:left;width:100%x;margin-top:15px">
+						<!-- Monday -->
+						<div id="whichday" style="width:100%;text-align:center;font-size:14pt;color:#0055bf;margin-bottom:5px">Monday's Schedule</div>
+						<div id="mondayschedule">
+							<table>
+								<tr class="onair_header">
+									<td style="width:230px;">Show</td>
+									<td style="width:230px">Show Type</td>
+									<td style="width:230px">Host</td>
+									<td style="width:230px">Time</td>
+								</tr>
+								                                    <tr>
+                                        <td>XPDR Radio Show Witk Kevin G</td>
+                                        <td>Talk-Music</td>
+                                        <td>Kevin G</td>
+                                        <td>2000z</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>Monday Mania</td>
+                                        <td>Live Show</td>
+                                        <td>Bailey</td>
+                                        <td>2300z</td>
+                                    </tr>
+                                								<tr>
+									<td>The Next Generation in Music</td>
+									<td>Music</td>
+									<td>AutoDJ</td>
+									<td>Any Applicable</td>
+								</tr>
+							</table>
+						</div>
+						<!-- Tuesday -->
+						<div id="tuesdayschedule" style="display:none">
+							<table>
+								<tr class="onair_header">
+									<td style="width:230px;">Show</td>
+									<td style="width:230px">Show Type</td>
+									<td style="width:230px">Host</td>
+									<td style="width:230px">Time</td>
+								</tr>
+                                                                    <tr>
+                                        <td>Top Hits with Connor</td>
+                                        <td>Live Show</td>
+                                        <td>Connor</td>
+                                        <td>2100z</td>
+                                    </tr>
+                                								<tr>
+									<td>The Next Generation in Music</td>
+									<td>Music</td>
+									<td>AutoDJ</td>
+									<td>Any Applicable</td>
+								</tr>
+							</table>
+						</div>
+						<!-- wednesday -->
+						<div id="wednesdayschedule" style="display:none">
+							<table>
+								<tr class="onair_header">
+									<td style="width:230px;">Show</td>
+									<td style="width:230px">Show Type</td>
+									<td style="width:230px">Host</td>
+									<td style="width:230px">Time</td>
+								</tr>
+                                                                    <tr>
+                                        <td>The All Request Show</td>
+                                        <td>Interactive</td>
+                                        <td>Ron </td>
+                                        <td>2200z</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>Midweek Madness!!</td>
+                                        <td>Live Show</td>
+                                        <td>Bailey</td>
+                                        <td>2300z</td>
+                                    </tr>
+                                								<tr>
+									<td>The Next Generation in Music</td>
+									<td>Music</td>
+									<td>AutoDJ</td>
+									<td>Any Applicable</td>
+								</tr>
+							</table>
+						</div>
+						<!-- thursday -->
+						<div id="thursdayschedule" style="display:none">
+							<table>
+								<tr class="onair_header">
+									<td style="width:230px;">Show</td>
+									<td style="width:230px">Show Type</td>
+									<td style="width:230px">Host</td>
+									<td style="width:230px">Time</td>
+								</tr>
+                                                                    <tr>
+                                        <td>It't The Connor Show</td>
+                                        <td>He thinks he's live.</td>
+                                        <td>Connor</td>
+                                        <td>1800z</td>
+                                    </tr>
+                                								<tr>
+									<td>The Next Generation in Music</td>
+									<td>Music</td>
+									<td>AutoDJ</td>
+									<td>Any Applicable</td>
+								</tr>
+							</table>
+						</div>
+						<!-- friday -->
+						<div id="fridayschedule" style="display:none">
+							<table>
+								<tr class="onair_header">
+									<td style="width:230px;">Show</td>
+									<td style="width:230px">Show Type</td>
+									<td style="width:230px">Host</td>
+									<td style="width:230px">Time</td>
+								</tr>
+                                                                    <tr>
+                                        <td>Friday Night Live</td>
+                                        <td>Live Show</td>
+                                        <td>Josh Riley</td>
+                                        <td>1700z</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>Ethan's Evening</td>
+                                        <td>Live Show</td>
+                                        <td>Ethan Browning</td>
+                                        <td>1900z</td>
+                                    </tr>
+                                								<tr>
+									<td>The Next Generation in Music</td>
+									<td>Music</td>
+									<td>AutoDJ</td>
+									<td>Any Applicable</td>
+								</tr>
+							</table>
+						</div>
+						<!-- saturday -->
+						<div id="saturdayschedule" style="display:none">
+							<table>
+								<tr class="onair_header">
+									<td style="width:230px;">Show</td>
+									<td style="width:230px">Show Type</td>
+									<td style="width:230px">Host</td>
+									<td style="width:230px">Time</td>
+								</tr>
+                                                                    <tr>
+                                        <td>A Vincetian Evening</td>
+                                        <td>Live Show</td>
+                                        <td>Vincent Das</td>
+                                        <td>1900z</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>Hard Rock Saturday</td>
+                                        <td>Live Show</td>
+                                        <td>Ron </td>
+                                        <td>2300z</td>
+                                    </tr>
+                                								<tr>
+									<td>The Next Generation in Music</td>
+									<td>Music</td>
+									<td>AutoDJ</td>
+									<td>Any Applicable</td>
+								</tr>
+							</table>
+						</div>
+						<!-- sunday -->
+						<div id="sundayschedule" style="display:none">
+							<table>
+								<tr class="onair_header">
+									<td style="width:230px;">Show</td>
+									<td style="width:230px">Show Type</td>
+									<td style="width:230px">Host</td>
+									<td style="width:230px">Time</td>
+								</tr>
+                                                                    <tr>
+                                        <td>Box Of Rock</td>
+                                        <td>Live Show</td>
+                                        <td>Ron </td>
+                                        <td>2200z</td>
+                                    </tr>
+                                								<tr>
+									<td>The Next Generation in Music</td>
+									<td>Music</td>
+									<td>AutoDJ</td>
+									<td>Any Applicable</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+				<!-- meet dj -->
+				<div id="meetdjtab" class="contentbox" style="display:none">
+	                <div style="width:950px;text-align:center;font-size:14pt;color:#0055bf;margin-bottom:5px">Our DJ's</div>
+                								<div id="dj45" style="overflow:hidden;width:222px;height:235px;padding:0;margin-left:0;margin-right:5px" class="dj dj_biopage">                            
+								<img style="width:222px;height:200px;" alt="dj thumbnail" src="uploads/images/405phpijcVFy.png"/>
+								<div style="width:100%;text-align:center;font-size:14pt;color:#0055bf;margin-bottom:5px">Ethan Browning</div>
+                                <div id="dj45bio" style="margin:10px">Give a big Jetsteam welcome to our newest host!</div>
+                            </div>
+													<div id="dj39" style="overflow:hidden;width:222px;height:235px;padding:0;margin-left:5px;margin-right:5px" class="dj dj_biopage">                            
+								<img style="width:222px;height:200px;" alt="dj thumbnail" src="uploads/images/1phphG0dmy.png"/>
+								<div style="width:100%;text-align:center;font-size:14pt;color:#0055bf;margin-bottom:5px">Ron </div>
+                                <div id="dj39bio" style="margin:10px">Not only is Ron the Program Director, he also hosts the Box of Rock on Sunday Nights and requests from you guys on Wednesday nights. Tune In!</div>
+                            </div>
+													<div id="dj41" style="overflow:hidden;width:222px;height:235px;padding:0;margin-left:5px;margin-right:5px" class="dj dj_biopage">                            
+								<img style="width:222px;height:200px;" alt="dj thumbnail" src="uploads/images/1phpXskCDU.png"/>
+								<div style="width:100%;text-align:center;font-size:14pt;color:#0055bf;margin-bottom:5px">Breanna</div>
+                                <div id="dj41bio" style="margin:10px">It is Breanna big head.</div>
+                            </div>
+													<div id="dj46" style="overflow:hidden;width:222px;height:235px;padding:0;margin-left:5px;margin-right:0" class="dj dj_biopage">                            
+								<img style="width:222px;height:200px;" alt="dj thumbnail" src="uploads/images/405phpxuXmQb.png"/>
+								<div style="width:100%;text-align:center;font-size:14pt;color:#0055bf;margin-bottom:5px">Kevin G</div>
+                                <div id="dj46bio" style="margin:10px">Kevin is a working journalist from Ireland, obsessed with sport and fly the big jets!</div>
+                            </div>
+														<div style="clear:both;height:10px;"></div>
+															<div id="dj35" style="overflow:hidden;width:222px;height:235px;padding:0;margin-left:0;margin-right:5px" class="dj dj_biopage">                            
+								<img style="width:222px;height:200px;" alt="dj thumbnail" src="uploads/images/405phpNfpghT.png"/>
+								<div style="width:100%;text-align:center;font-size:14pt;color:#0055bf;margin-bottom:5px">Bailey</div>
+                                <div id="dj35bio" style="margin:10px">Bailey is a DJ of JetStream Radio in training  He loves his Flight Sim More to come. </div>
+                            </div>
+													<div id="dj34" style="overflow:hidden;width:222px;height:235px;padding:0;margin-left:5px;margin-right:5px" class="dj dj_biopage">                            
+								<img style="width:222px;height:200px;" alt="dj thumbnail" src="uploads/images/413phpWURstG.png"/>
+								<div style="width:100%;text-align:center;font-size:14pt;color:#0055bf;margin-bottom:5px">Brandon</div>
+                                <div id="dj34bio" style="margin:10px">Brandon is one of the station managers who oversees host hiring and handles other things JetStream related. You can also tune into to his syndicated shows to hear your favorite hits no matter what genre you like!</div>
+                            </div>
+													<div id="dj30" style="overflow:hidden;width:222px;height:235px;padding:0;margin-left:5px;margin-right:5px" class="dj dj_biopage">                            
+								<img style="width:222px;height:200px;" alt="dj thumbnail" src="uploads/images/413phpRvIZIq.png"/>
+								<div style="width:100%;text-align:center;font-size:14pt;color:#0055bf;margin-bottom:5px">David</div>
+                                <div id="dj30bio" style="margin:10px">David is another manager to the station that has been involed in the flight simulator community for many years. He has spent real-world flight hours in a cessna and many more in the Flight simulator</div>
+                            </div>
+													<div id="dj31" style="overflow:hidden;width:222px;height:235px;padding:0;margin-left:5px;margin-right:0" class="dj dj_biopage">                            
+								<img style="width:222px;height:200px;" alt="dj thumbnail" src="uploads/images/1php6Zu0C0.png"/>
+								<div style="width:100%;text-align:center;font-size:14pt;color:#0055bf;margin-bottom:5px">Collin</div>
+                                <div id="dj31bio" style="margin:10px">TFDi Design's very own Collin Biedenkapp has brought you smartCARS and the very anticipated Boeing 717. During his off time from coding products you love, he appears in the &quot;Global Chat&quot; and will host shows containing insider information and his musical style!</div>
+                            </div>
+														<div style="clear:both;height:10px;"></div>
+															<div id="dj36" style="overflow:hidden;width:222px;height:235px;padding:0;margin-left:0;margin-right:5px" class="dj dj_biopage">                            
+								<img style="width:222px;height:200px;" alt="dj thumbnail" src="uploads/images/413phpMWc7Nq.png"/>
+								<div style="width:100%;text-align:center;font-size:14pt;color:#0055bf;margin-bottom:5px">Connor</div>
+                                <div id="dj36bio" style="margin:10px">When Connor is live you can expect to turn the dial up. His shows display a wide variety of music that will reach the taste of just about any listener. You think of a song, and Connor will get it streamed live on air!</div>
+                            </div>
+													<div id="dj27" style="overflow:hidden;width:222px;height:235px;padding:0;margin-left:5px;margin-right:5px" class="dj dj_biopage">                            
+								<img style="width:222px;height:200px;" alt="dj thumbnail" src="uploads/images/289phpAY8tcQ.png"/>
+								<div style="width:100%;text-align:center;font-size:14pt;color:#0055bf;margin-bottom:5px">Joshua</div>
+                                <div id="dj27bio" style="margin:10px">TFDi Design's very own Community Manager. When he goes on air, expect to hear some in depth news when it comes to the aviation field and some interesting interviews with developers within the flight simulation community!</div>
+                            </div>
+													<div id="dj43" style="overflow:hidden;width:222px;height:235px;padding:0;margin-left:5px;margin-right:5px" class="dj dj_biopage">                            
+								<img style="width:222px;height:200px;" alt="dj thumbnail" src="uploads/images/405phps7o6aS.png"/>
+								<div style="width:100%;text-align:center;font-size:14pt;color:#0055bf;margin-bottom:5px">Josh Riley</div>
+                                <div id="dj43bio" style="margin:10px">Josh loves broadcasting at weekends for your enjoyment and loves taking requests! He loves nothing more than kicking back with music and flying to somewhere in the world!</div>
+                            </div>
+													<div id="dj44" style="overflow:hidden;width:222px;height:235px;padding:0;margin-left:5px;margin-right:0" class="dj dj_biopage">                            
+								<img style="width:222px;height:200px;" alt="dj thumbnail" src="uploads/images/405phpM6qNi4.png"/>
+								<div style="width:100%;text-align:center;font-size:14pt;color:#0055bf;margin-bottom:5px">Vincent Das</div>
+                                <div id="dj44bio" style="margin:10px">While new to JetStream Vincent is no stranger to broadcasting. </div>
+                            </div>
+										</div>
+            	
+			</div>
+			<!-- footer -->
+			<div class="footer" style="color:#a0a0a0;font-size:10pt;margin-top:5px">
+				<div style="display:inline;float:left"><script type="text/javascript">                    
+                        var currd = new Date()
+                        document.write(currd.getFullYear())                     
+                    </script>
+                    <a href='http://tfdicorp.com/' target='_blank'>TFDi Corp</a>, All Rights Reserved. TFDi Corp  d.b.a. JetStream Radio.</p>              </div>
+				<div style="display:inline;float:right"><a target="_blank" href='mailto:admin@jetstreamradio.com'>admin@jetstreamradio.com</a></div>
+			</div>
+		</div>		
+	</body>
+
+<!-- Mirrored from jetstreamradio.com/?content=userarea by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 28 Apr 2017 02:52:49 GMT -->
+</html>
